@@ -7,8 +7,8 @@ var app = angular.module('autotest', ['ngRoute','ngSanitize'])
         .when("/about", {
             templateUrl: "views/about.html"
         })
-        .when("/help", {
-            templateUrl: "views/help.html"
+        .when("/contact_us", {
+            templateUrl: "views/contact_us.html"
         });
 }])
 .filter('trusted', ['$sce', function ($sce) {
