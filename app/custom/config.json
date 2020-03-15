@@ -1,0 +1,26 @@
+{
+	"menuList":[
+		{
+			"header": "¿Viajaste a zonas de riesgo?",
+			"options":[
+				{
+					"text":"Si",
+					"goto":1
+				},
+				{
+					"text":"No",
+					"goto":2
+				}
+			]
+		},
+		{
+			"header": "Quedate en casa por 14 días.",
+			"options":[
+				{
+					"text":"¿Tenés síntomas?",
+					"goto":0
+				}
+			]
+		}
+	]
+}

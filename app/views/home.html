@@ -1,0 +1,16 @@
+<div class="page">
+    <div class="page-content">
+        
+		<div class="block">
+			<div class="row">
+				<div class="card">
+					<div class="card-header">{{current.header}}</div>
+					<div class="card-content card-content-padding" ng-if="current.content">{{current.content}}</div>
+				</div>
+			</div>
+			<div class="row" ng-repeat="(key, item) in current.options track by $index">
+				<button class="col button button-outline" ng-click="loadMenu(item.goto)">{{item.text}}</button>
+			</div>
+		</div>
+	</div>
+</div>

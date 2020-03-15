@@ -1,0 +1,11 @@
+.dialog-button {
+    text-align: left!important;
+}
+
+.help-img{
+    min-width: 85%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
