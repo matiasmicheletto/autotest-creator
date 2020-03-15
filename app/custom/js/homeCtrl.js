@@ -1,7 +1,6 @@
 app.controller("homeCtrl",["$scope", "$rootScope", function ($scope,$rootScope) { 
 // Controller vista home
-    console.log("home");
-    
+
     // Descargar config con diagrama de flujo
     $rootScope.showPreloader("Cargando...");
     

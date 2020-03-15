@@ -2,7 +2,7 @@
 	"menuList":[
 		{
 			"header": "¿Viajaste recientemente a zonas de riesgo?",
-			"content": "Europa (Italia, Francia, España, Alemania), China, Irán, Japón o aeropuertos internacionales",
+			"content": "Países con circulación de virus o aeropuertos internacionales",
 			"options":[
 				{
 					"text":"Si!",
@@ -16,7 +16,7 @@
 		},
 		{
 			"header": "Deberás quedarte en casa por 14 días.",
-			"content": "Enviá un mensaje de WhatsApp a Sanidad UNS: <a href='tel:5492914436710'>+54 9 291 443-6710</a>.<br><br>¿Tenés alguno de los siguientes síntomas? <ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li><li>Dificultad para respirar</li></ul>",
+			"content": "Registramos la situación en el sistema de salud y podemos realizar el seguimiento. Enviá un mensaje por WhatsApp a Sanidad UNS: <a href='tel:5492914436710'>+54 9 291 443-6710</a>.<br><br>¿Tenés alguno de los siguientes síntomas? <ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li><li>Dificultad para respirar</li></ul>",
 			"options":[
 				{
 					"text":"Sí",
@@ -42,20 +42,20 @@
 			]
 		},
 		{
-			"header":"No asistas a guardias, hospitales, salas médicas o sanidad.",
-			"content":"Mientras confirmás tu diagnóstico, tu familia debe hacer aislamiento. <br> Realizá la consulta por alguna de las siguientes líneas de asistencia: ",
+			"header":"No asistas a guardias, hospitales, salas médicas o Sanidad.",
+			"content":"Mientras confirmás tu diagnóstico, tu familia debe hacer aislamiento. <br> Realizá la consulta por alguna de las siguientes vías de contacto: ",
 			"options":[
 				{
-					"text":"107 (CABA)",
-					"href":"tel:107"
+					"text":"+54 9 291 439-0105",
+					"href":"tel:+5492914390105"
 				},
 				{
-					"text":"148 (GBA)",
-					"href":"tel:148"
+					"text":"epidemologia@bahiablanca.gov.ar",
+					"href":"mailto:epidemologia@bahiablanca.gov.ar"
 				},
 				{
-					"text":"0800 222 1002 (Resto del país)",
-					"href":"tel:08002221002"
+					"text":"epidemologiambb@hotmail.com",
+					"href":"mailto:epidemologiambb@hotmail.com"
 				},
 				{
 					"text":"Volver al inicio",
