@@ -10,22 +10,40 @@
 				},
 				{
 					"text":"No",
-					"goto":"2"
+					"goto":"3"
 				}
 			]
 		},
 		{
 			"header": "Deberás quedarte en casa por 14 días.",
-			"content": "Registramos la situación en el sistema de salud y podemos realizar el seguimiento. Enviá un mensaje por WhatsApp a Sanidad UNS: <a href='tel:5492914436710'>+54 9 291 443-6710</a>.<br><br>¿Tenés alguno de los siguientes síntomas? <ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li><li>Dificultad para respirar</li></ul>",
+			"content": "Registramos la situación en el sistema de salud y podemos realizar el seguimiento. Enviá un mensaje por WhatsApp a Sanidad UNS:",
+			"options":[
+				{
+					"text":"+54 9 291 443-6710",
+					"href":"tel:5492914436710"
+				},
+				{
+					"text":"Siguiente",
+					"goto":"2"
+				},
+				{
+					"text":"Volver al inicio",
+					"goto":"0"
+				}
+			]
+		},
+		{
+			"header": "¿Tenés alguno de los siguientes síntomas?",
+			"content": "<ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li><li>Dificultad para respirar</li></ul>",
 			"options":[
 				{
 					"text":"Sí",
-					"goto":"3"
+					"goto":"4"
 				},
 				{
 					"text":"No",
-					"goto":"2"
-				}
+					"goto":"3"
+				}	
 			]
 		},
 		{
@@ -37,13 +55,13 @@
 				},
 				{
 					"text":"No",
-					"goto":"4"
+					"goto":"5"
 				}
 			]
 		},
 		{
 			"header":"No asistas a guardias, hospitales, salas médicas o Sanidad.",
-			"content":"Mientras confirmás tu diagnóstico, tu familia debe hacer aislamiento. <br> Realizá la consulta por alguna de las siguientes vías de contacto: ",
+			"content":"Mientras confirmás tu diagnóstico, tu familia debe hacer aislamiento. <br> Realizá la consulta al Departamento de Epidemología y Calidad: ",
 			"options":[
 				{
 					"text":"+54 9 291 439-0105",
