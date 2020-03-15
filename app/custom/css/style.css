@@ -1,6 +1,15 @@
+.home-page{
+	background-image: url("../img/backgroundUNS.png");
+	background-position: center;
+  	background-repeat: no-repeat;
+  	background-size: cover;
+}
+
 .card {
 	width:100%;
-	margin: 10px;
+	max-width: 500px;
+	margin: auto;
+	background-color:#eeeeee;
 }
 
 .menu-btn-container{
@@ -9,4 +18,7 @@
 
 .menu-btn {
 	width:100%;
+	max-width: 400px;
+	margin:0 auto;
+	display: block;
 }

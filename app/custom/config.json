@@ -1,7 +1,8 @@
 {
 	"menuList":[
 		{
-			"header": "¿Viajaste a zonas de riesgo?",
+			"header": "¿Viajaste recientemente a zonas de riesgo?",
+			"content": "Europa (Italia, Francia, España, Alemania), China, Irán, Japón o aeropuertos internacionales",
 			"options":[
 				{
 					"text":"Si!",
@@ -15,7 +16,7 @@
 		},
 		{
 			"header": "Deberás quedarte en casa por 14 días.",
-			"content": "¿Tenés síntomas? (Fiebre, tos, dolor de garganta, dificultad para respirar)",
+			"content": "Enviá un mensaje de WhatsApp a Sanidad UNS: <a href='tel:5492914436710'>+54 9 291 443-6710</a>.<br><br>¿Tenés alguno de los siguientes síntomas? <ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li><li>Dificultad para respirar</li></ul>",
 			"options":[
 				{
 					"text":"Sí",
@@ -41,8 +42,8 @@
 			]
 		},
 		{
-			"header":"Mientras confirmás tu diagnóstico",
-			"content":"Tu familia debe hacer aislamiento. Consultá por alguna de las siguientes líneas de asistencia: ",
+			"header":"No asistas a guardias, hospitales, salas médicas o sanidad.",
+			"content":"Mientras confirmás tu diagnóstico, tu familia debe hacer aislamiento. <br> Realizá la consulta por alguna de las siguientes líneas de asistencia: ",
 			"options":[
 				{
 					"text":"107 (CABA)",
@@ -57,17 +58,17 @@
 					"href":"tel:08002221002"
 				},
 				{
-					"text":"Volver al comienzo",
+					"text":"Volver al inicio",
 					"goto":"0"
 				}
 			]
 		},
 		{
-			"header":"Tu familia no debe hacer aislamiento, pero:",
+			"header":"No es obligación que realices aislamiento, pero:",
 			"content": "<ul><li>Minimizá eventos sociales.</li><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li>",
 			"options":[
 				{
-					"text":"Volver al comienzo",
+					"text":"Volver al inicio",
 					"goto":"0"
 				}
 			]
