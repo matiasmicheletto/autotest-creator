@@ -2,8 +2,7 @@ var app = angular.module('autotest', ['ngRoute','ngSanitize'])
 .config(["$routeProvider", function ($routeProvider) {
     $routeProvider
         .when("/", {
-            templateUrl: "views/home.html",
-            controller: "homeCtrl"
+            templateUrl: "views/home.html"
         })
         .when("/about", {
             templateUrl: "views/about.html"
@@ -34,6 +33,31 @@ var app = angular.module('autotest', ['ngRoute','ngSanitize'])
         if($rootScope.preloader.opened)
             $rootScope.preloader.close();
     };
+
+    $rootScope.closePanel = function(){
+        f7.panel.close(document.getElementById("panel-menu"), true);
+    };
+
+    // Descargar config con diagrama de flujo
+    $rootScope.showPreloader("Cargando...");
+    
+    $.getJSON("custom/config.json", function(result) {
+        $rootScope.hidePreloader();
+        
+        console.log(result); 
+
+        $rootScope.menuList = result.menuList; 
+        $rootScope.current = result.menuList[0];
+
+        $rootScope.$apply();
+    }, function(err){
+        console.log(err);
+    });
+
+    $rootScope.loadMenu = function(index){
+        if($rootScope.menuList[index])
+            $rootScope.current = $rootScope.menuList[index];
+    }
 
 });
 

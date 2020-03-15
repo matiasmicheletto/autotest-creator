@@ -50,14 +50,6 @@
 					"href":"tel:+5492914390105"
 				},
 				{
-					"text":"epidemologia@bahiablanca.gov.ar",
-					"href":"mailto:epidemologia@bahiablanca.gov.ar"
-				},
-				{
-					"text":"epidemologiambb@hotmail.com",
-					"href":"mailto:epidemologiambb@hotmail.com"
-				},
-				{
 					"text":"Volver al inicio",
 					"goto":"0"
 				}

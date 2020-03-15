@@ -36,7 +36,7 @@
 					</div>
 				</div>
 
-				<div class="panel panel-left panel-cover panel-init">
+				<div id="panel-menu" class="panel panel-left panel-cover panel-init">
 					<div class="block">
 
 						<h4>MENU</h4>
@@ -44,13 +44,13 @@
 						<div class="list links-list">
 							<ul>
 								<li>
-									<a class="panel-close" href="#!/">Home</a>
+									<a ng-click="closePanel()" class="link external panel-close" href="#!/">Home</a>
 								</li>
 								<li>
-									<a class="panel-close" href="#help">Ayuda</a class="panel-close">
+									<a ng-click="closePanel()" class="link external panel-close" href="#!/help">Ayuda</a>
 								</li>
 								<li>
-									<a class="panel-close" href="#about">Acerca de</a class="panel-close">
+									<a ng-click="closePanel()" class="link external panel-close" href="#!/about">Acerca de</a>
 								</li>
 							</ul>
 						</div>
