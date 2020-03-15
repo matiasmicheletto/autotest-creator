@@ -12,6 +12,10 @@ var app = angular.module('autotest', ['ngRoute','ngSanitize'])
             templateUrl: "views/help.html"
         });
 }])
+.filter('trusted', ['$sce', function ($sce) {
+    // Ver: https://stackoverflow.com/questions/39480969/angular-interpolateinterr-error-when-adding-url-from-variable
+    return $sce.trustAsResourceUrl;
+ }])
 .run(function($rootScope){
 
     // Inicializacion F7

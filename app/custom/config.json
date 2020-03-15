@@ -4,21 +4,71 @@
 			"header": "¿Viajaste a zonas de riesgo?",
 			"options":[
 				{
-					"text":"Si",
-					"goto":1
+					"text":"Si!",
+					"goto":"1"
 				},
 				{
 					"text":"No",
-					"goto":2
+					"goto":"2"
 				}
 			]
 		},
 		{
-			"header": "Quedate en casa por 14 días.",
+			"header": "Deberás quedarte en casa por 14 días.",
+			"content": "¿Tenés síntomas? (Fiebre, tos, dolor de garganta, dificultad para respirar)",
 			"options":[
 				{
-					"text":"¿Tenés síntomas?",
-					"goto":0
+					"text":"Sí",
+					"goto":"3"
+				},
+				{
+					"text":"No",
+					"goto":"4"
+				}
+			]
+		},
+		{
+			"header":"¿Estuviste en contacto con un caso sospechoso o confirmado?",
+			"options":[
+				{
+					"text":"Sí",
+					"goto":"1"
+				},
+				{
+					"text":"No",
+					"goto":"4"
+				}
+			]
+		},
+		{
+			"header":"Mientras confirmás tu diagnóstico",
+			"content":"Tu familia debe hacer aislamiento. Consultá por alguna de las siguientes líneas de asistencia: ",
+			"options":[
+				{
+					"text":"107 (CABA)",
+					"href":"tel:107"
+				},
+				{
+					"text":"148 (GBA)",
+					"href":"tel:148"
+				},
+				{
+					"text":"0800 222 1002 (Resto del país)",
+					"href":"tel:08002221002"
+				},
+				{
+					"text":"Volver al comienzo",
+					"goto":"0"
+				}
+			]
+		},
+		{
+			"header":"Tu familia no debe hacer aislamiento, pero:",
+			"content": "<ul><li>Minimizá eventos sociales.</li><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li>",
+			"options":[
+				{
+					"text":"Volver al comienzo",
+					"goto":"0"
 				}
 			]
 		}

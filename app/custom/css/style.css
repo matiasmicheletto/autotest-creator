@@ -1,11 +1,12 @@
-.dialog-button {
-    text-align: left!important;
+.card {
+	width:100%;
+	margin: 10px;
 }
 
-.help-img{
-    min-width: 85%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
+.menu-btn-container{
+	padding-bottom: 10px;
+}
+
+.menu-btn {
+	width:100%;
 }

@@ -1,6 +1,7 @@
 app.controller("homeCtrl",["$scope", "$rootScope", function ($scope,$rootScope) { 
 // Controller vista home
-
+    console.log("home");
+    
     // Descargar config con diagrama de flujo
     $rootScope.showPreloader("Cargando...");
     
@@ -13,6 +14,8 @@ app.controller("homeCtrl",["$scope", "$rootScope", function ($scope,$rootScope) 
         $scope.current = result.menuList[0];
 
         $scope.$apply();
+    }, function(err){
+        console.log(err);
     });
 
     $scope.loadMenu = function(index){

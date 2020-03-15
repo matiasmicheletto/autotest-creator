@@ -1,15 +1,28 @@
 <div class="page">
     <div class="page-content">
         
-		<div class="block">
-			<div class="row">
-				<div class="card">
-					<div class="card-header">{{current.header}}</div>
-					<div class="card-content card-content-padding" ng-if="current.content">{{current.content}}</div>
+        <div class="row">
+			<div class="card">
+				<div class="card-content card-content-padding">
+					<h4 ng-if="current.header">{{current.header}}</h4>
+					<div ng-if="current.content" ng-bind-html="current.content">
+					</div>
 				</div>
 			</div>
-			<div class="row" ng-repeat="(key, item) in current.options track by $index">
-				<button class="col button button-outline" ng-click="loadMenu(item.goto)">{{item.text}}</button>
+		</div>
+		
+		<div class="block">
+		
+			<div class="menu-btn-container row" ng-repeat="(key, item) in current.options track by $index">
+				
+				<button ng-if="item.goto" class="button button-raised button-fill button-round" ng-click="loadMenu(item.goto)">
+					{{item.text}}
+				</button>
+				
+				<a ng-if="item.href" class="menu-btn button button-raised button-fill button-round" ng-href="{{item.href}}">
+					{{item.text}}
+				</a>
+
 			</div>
 		</div>
 	</div>
