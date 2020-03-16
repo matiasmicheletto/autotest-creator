@@ -1,2 +1,3 @@
-# menu-flowchart-guide
-An app with a list of buttons and menus that follows a predefined flowchart
+# covid19-autotest-uns
+
+App con menús y botones que sigue un flujo de decisiones predefinido.
