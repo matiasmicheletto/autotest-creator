@@ -15,11 +15,11 @@
 		
 			<div class="menu-btn-container row" ng-repeat="(key, item) in current.options track by $index">
 				
-				<button ng-if="item.goto" class="menu-btn button button-raised button-fill button-round" ng-click="loadMenu(item.goto)">
+				<button ng-if="item.goto" class="menu-btn button button-raised button-fill button-round" style="background-color: {{item.color || '#1a068d'}};" ng-click="loadMenu(item.goto)">
 					{{item.text}}
 				</button>
 				
-				<a ng-if="item.href" class="link external menu-btn button button-raised button-fill button-round" ng-href="{{item.href}}">
+				<a ng-if="item.href" class="link external menu-btn button button-raised button-fill button-round" style="background-color: {{item.color || '#1a068d'}};" ng-href="{{item.href}}">
 					{{item.text}}
 				</a>
 

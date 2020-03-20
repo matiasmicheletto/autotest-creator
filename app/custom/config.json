@@ -5,8 +5,8 @@
 			"content": "Países con circulación de virus o aeropuertos internacionales",
 			"options":[
 				{
-					"text":"Si!",
-					"goto":"1"
+					"text":"Si",
+					"goto":"2"
 				},
 				{
 					"text":"No",
@@ -34,24 +34,31 @@
 		},
 		{
 			"header": "¿Tenés alguno de los siguientes síntomas?",
-			"content": "<ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li><li>Dificultad para respirar</li></ul>",
+			"content": "<ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li></ul>",
 			"options":[
 				{
-					"text":"Sí",
-					"goto":"4"
+					"text":"Sí, con dificultad respiratoria",
+					"goto":"4",
+					"color": "#B40404"
 				},
 				{
-					"text":"No",
-					"goto":"3"
+					"text":"Sí, sin dificultad respiratoria",
+					"goto":"4",
+					"color": "#B404AE"
+				},
+				{
+					"text":"Ningún síntoma",
+					"goto":"5",
+					"color": "#013ADF"
 				}	
 			]
 		},
 		{
-			"header":"¿Estuviste en contacto con un caso sospechoso o confirmado?",
+			"header":"¿Estuviste en contacto con un caso sospechoso, confirmado o persona que viajó al exterior?",
 			"options":[
 				{
 					"text":"Sí",
-					"goto":"1"
+					"goto":"2"
 				},
 				{
 					"text":"No",
@@ -74,8 +81,8 @@
 			]
 		},
 		{
-			"header":"No es obligación que realices aislamiento, pero:",
-			"content": "<ul><li>Minimizá eventos sociales.</li><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li>",
+			"header":"Es obligación que realices aislamiento social y preventivo en tu domicilio. Además es importante:",
+			"content": "<ul><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li></ul><br><center><h3>Cuidarnos es aislarnos</h3></center>",
 			"options":[
 				{
 					"text":"Volver al inicio",
