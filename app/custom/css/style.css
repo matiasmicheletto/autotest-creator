@@ -15,3 +15,11 @@
 	margin:0 auto;
 	display: block;
 }
+
+.toast-success {
+	background-color: darkgreen;
+}
+
+.toast-error {
+	background-color: darkred;
+}

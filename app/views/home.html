@@ -12,7 +12,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">Nombre</div>
 							<div class="item-input-wrap">
-								<input type="text" name="name" placeholder="Su nombre completo">
+								<input type="text" name="name" placeholder="Su nombre completo" ng-model="userData.name">
 							</div>
 						</div>
 					</div>
@@ -22,7 +22,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">Edad</div>
 							<div class="item-input-wrap">
-								<input type="number" name="age" placeholder="Edad">
+								<input type="number" name="age" placeholder="Edad" ng-model="userData.age">
 							</div>
 						</div>
 					</div>
@@ -32,7 +32,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">DNI/DU/LC/LE/PAS</div>
 							<div class="item-input-wrap">
-								<input type="number" name="dni" placeholder="Identidad">
+								<input type="number" name="dni" placeholder="Identidad" ng-model="userData.dni">
 							</div>
 						</div>
 					</div>
@@ -42,7 +42,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">Teléfono</div>
 							<div class="item-input-wrap">
-								<input type="text" name="tel" placeholder="Tel">
+								<input type="text" name="tel" placeholder="Tel" ng-model="userData.tel">
 							</div>
 						</div>
 					</div>
@@ -52,8 +52,8 @@
 						<div class="item-inner">
 							<div class="item-title item-label">Género</div>
 							<div class="item-input-wrap">
-								<select name="gender">
-									<option value="m" selected>Masculino</option>
+								<select name="gender" ng-model="userData.gender">
+									<option value="m">Masculino</option>
 									<option value="f">Femenino</option>
 									<option value="n">Otro</option>
 								</select>
@@ -65,9 +65,16 @@
 		</form>
 		
 		<div class="block">
-			<a href="#!/autotest"
-				class="link external menu-btn button button-raised button-fill button-round {{userAllowed ? '':'disabled'}}">Iniciar
-				autotest</a>
+			<div class="menu-btn-container row">
+				<a href="#!/autotest" class="menu-btn button button-raised button-fill button-round {{formAllowed ? '':'disabled'}}" ng-click="checkForm()">
+					Verificar
+				</a>
+			</div>
+			<div class="menu-btn-container row">
+				<a href="#!/autotest" class="link external menu-btn button button-raised button-fill button-round {{userAllowed ? '':'disabled'}}" style="background-color:darkgreen">
+					Iniciar autotest
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

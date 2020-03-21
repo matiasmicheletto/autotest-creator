@@ -9,13 +9,13 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
                 templateUrl: "views/autotest.html",
                 controller: "autotest",
                 resolve: { // Verificar que el usuario puede realizar el autotest
-					check: ['$rootScope', '$location', function ($rootScope, $location) {
-						if ($rootScope.userAllowed) 
-							$location.path('/autotest');
-						else 
-							$location.path('/');
-					}]
-				}
+                    check: ['$rootScope', '$location', function ($rootScope, $location) {
+                        if ($rootScope.userAllowed)
+                            $location.path('/autotest');
+                        else
+                            $location.path('/');
+                    }]
+                }
             })
             .when("/about", {
                 templateUrl: "views/about.html"
@@ -30,7 +30,7 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
     }])
     .run(function ($rootScope) {
 
-        // Inicializacion F7
+        // Inicializacion y componentes de F7
         var f7 = new Framework7({ // Libreria de estilos
             root: '#app',
             name: 'Autotest COVID19 UNS',
@@ -50,18 +50,36 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
         $rootScope.closePanel = function () {
             f7.panel.close(document.getElementById("panel-menu"), true);
         };
+
+        $rootScope.toastSuccess = function (message, timeout) {
+            f7.toast.create({
+                text: message,
+                closeTimeout: timeout || 2000,
+                destroyOnClose: true,
+                cssClass: "toast-success"
+            }).open();
+        };
         
-        $rootScope.userAllowed = false; // Admite el uso de la app
+        $rootScope.toastError = function (message, timeout) {
+            f7.toast.create({
+                text: message,
+                closeTimeout: timeout || 2000,
+                destroyOnClose: true,
+                cssClass: "toast-error"
+            }).open();
+        };
+
+        $rootScope.userAllowed = false; // Admite el uso del autotest
 
         $rootScope.showPreloader("Cargando...");
-        
+
+        // Iniciar servicios de backend
         middleware.init()
-        .then(function(res){
-            console.log(res);
-            $rootScope.hidePreloader();
-        })
-        .catch(function(err){
-            console.log(err);
-        });
-        
+            .then(function (res) {
+                console.log(res);
+                $rootScope.hidePreloader();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
     });

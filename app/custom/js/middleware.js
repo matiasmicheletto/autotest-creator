@@ -72,7 +72,7 @@ window.middleware = (function () {
                         }
 
                         if (range < config.locationFilter.range) // Si esta dentro de rango
-                            return fulfill();
+                            return fulfill({lat:position.coords.latitude, lng:position.coords.longitude});
                         else // Si no pertenece al area de analisis
                             return reject({
                                 msg: "Usuario fuera de area"

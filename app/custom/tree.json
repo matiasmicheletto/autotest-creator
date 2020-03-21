@@ -1,6 +1,7 @@
 {
 	"author": "matiasmicheletto@gmail.com",
 	"timestamp": 1584817621486,
+	"id": "T001",
 	"tree":[
 		{
 			"header": "¿Viajaste recientemente a zonas de riesgo?",
@@ -59,8 +60,8 @@
 					"href":"tel:+5492914390105"
 				},
 				{
-					"text":"Volver al inicio",
-					"goto":"0"
+					"text":"Finalizar",
+					"goto":"-1"
 				}
 			]
 		},
@@ -74,8 +75,8 @@
 					"color":"#B40404"
 				},
 				{
-					"text":"Volver al inicio",
-					"goto":"0"
+					"text":"Finalizar",
+					"goto":"-1"
 				}
 			]
 		}
