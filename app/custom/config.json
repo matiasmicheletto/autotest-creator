@@ -6,49 +6,31 @@
 			"options":[
 				{
 					"text":"Si",
-					"goto":"2"
+					"goto":"1"
 				},
 				{
 					"text":"No",
-					"goto":"3"
-				}
-			]
-		},
-		{
-			"header": "Deberás quedarte en casa por 14 días.",
-			"content": "Registramos la situación en el sistema de salud y podemos realizar el seguimiento. Enviá un mensaje por WhatsApp a Sanidad UNS:",
-			"options":[
-				{
-					"text":"+54 9 291 443-6710",
-					"href":"tel:5492914436710"
-				},
-				{
-					"text":"Siguiente",
 					"goto":"2"
-				},
-				{
-					"text":"Volver al inicio",
-					"goto":"0"
 				}
 			]
 		},
 		{
 			"header": "¿Tenés alguno de los siguientes síntomas?",
-			"content": "<ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li></ul>",
+			"content": "<ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li></ul><p>Indicá si es con o sin dificultad respiratoria (falta de aire):",
 			"options":[
 				{
-					"text":"Sí, con dificultad respiratoria",
+					"text":"Sí, <b><i>con</i></b> dificultad respiratoria",
 					"goto":"4",
 					"color": "#B40404"
 				},
 				{
-					"text":"Sí, sin dificultad respiratoria",
-					"goto":"4",
+					"text":"Sí, <b><i>sin</i></b> dificultad respiratoria",
+					"goto":"3",
 					"color": "#B404AE"
 				},
 				{
 					"text":"Ningún síntoma",
-					"goto":"5",
+					"goto":"3",
 					"color": "#013ADF"
 				}	
 			]
@@ -58,17 +40,17 @@
 			"options":[
 				{
 					"text":"Sí",
-					"goto":"2"
+					"goto":"1"
 				},
 				{
 					"text":"No",
-					"goto":"5"
+					"goto":"3"
 				}
 			]
 		},
 		{
-			"header":"No asistas a guardias, hospitales, salas médicas o Sanidad.",
-			"content":"Mientras confirmás tu diagnóstico, tu familia debe hacer aislamiento. <br> Realizá la consulta al Departamento de Epidemología y Calidad: ",
+			"header":"Es obligación que realices aislamiento social y preventivo en tu domicilio. Además es importante:",
+			"content": "<ul><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li></ul><br><p>Ante alguna duda podés realizar la consulta al Departamento de Epidemología y Calidad de la Secretaría de Salud: <a href='tel:+5492914390105'>+54 9 291 439-0105</a>.</p><center><h3>Cuidarnos es aislarnos</h3></center>",
 			"options":[
 				{
 					"text":"+54 9 291 439-0105",
@@ -81,9 +63,14 @@
 			]
 		},
 		{
-			"header":"Es obligación que realices aislamiento social y preventivo en tu domicilio. Además es importante:",
-			"content": "<ul><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li></ul><br><center><h3>Cuidarnos es aislarnos</h3></center>",
+			"header":"Proceda comunicándose con:",
+			"content": "<ul><li>Servicio de Emergencias: <a href='tel:107'>107</a></li></ul>",
 			"options":[
+				{
+					"text":"Llamar 107",
+					"href":"tel:107",
+					"color":"#B40404"
+				},
 				{
 					"text":"Volver al inicio",
 					"goto":"0"
