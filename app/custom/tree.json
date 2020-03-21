@@ -1,9 +1,7 @@
 {
-	"metadata":{
-		"author": "matiasmicheletto@gmail.com",
-		"timestamp": 1584817621486
-	},
-	"decisionTree":[
+	"author": "matiasmicheletto@gmail.com",
+	"timestamp": 1584817621486,
+	"tree":[
 		{
 			"header": "¿Viajaste recientemente a zonas de riesgo?",
 			"content": "Países con circulación de virus o aeropuertos internacionales",

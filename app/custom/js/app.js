@@ -7,7 +7,15 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
             })
             .when("/autotest", {
                 templateUrl: "views/autotest.html",
-                controller: "autotest"
+                controller: "autotest",
+                resolve: { // Verificar que el usuario puede realizar el autotest
+					check: ['$rootScope', '$location', function ($rootScope, $location) {
+						if ($rootScope.userAllowed) 
+							$location.path('/autotest');
+						else 
+							$location.path('/');
+					}]
+				}
             })
             .when("/about", {
                 templateUrl: "views/about.html"
@@ -43,6 +51,8 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
             f7.panel.close(document.getElementById("panel-menu"), true);
         };
         
+        $rootScope.userAllowed = false; // Admite el uso de la app
+
         $rootScope.showPreloader("Cargando...");
         
         middleware.init()

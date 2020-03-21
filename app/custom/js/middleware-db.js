@@ -58,6 +58,18 @@
         });
     };
 
+    public.db.getSortedLimited = function (path, key, limit) { // Obtener lista ordenada por key y con limite de entradas
+        return new Promise(function (fulfill, reject) {
+            firebase.database().ref(path).orderByChild(key).limitToLast(limit).once('value')
+                .then(function (snapshot) {
+                    return fulfill(snapshot);
+                })
+                .catch(function (error) {
+                    return reject(error);
+                });
+        });
+    };
+
     public.db.query = function(path, key, value) { // Consulta por valor
         return new Promise(function (fulfill, reject) {
             firebase.database().ref(path).orderByChild(key).equalTo(value).once('value')

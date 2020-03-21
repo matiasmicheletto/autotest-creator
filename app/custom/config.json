@@ -2,6 +2,6 @@
 	"locationFilter":{
 		"lat":-38.7164681,
 		"lng":-62.2699996,
-		"range": 0.5
+		"range": 1
     }
 }

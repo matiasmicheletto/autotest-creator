@@ -15,56 +15,98 @@ window.middleware = (function () {
 
     var public = {}; // Metodos y atributos publicos
 
-    public.init = function(){ // Inicializacion del middleware
-        return new Promise(function(fulfill, reject){
-            try{
+    public.init = function () { // Inicializacion del middleware
+        return new Promise(function (fulfill, reject) {
+            try {
                 firebase.initializeApp(firebaseConfig);
                 firebase.analytics();
                 return fulfill("App inicializada.");
-            }catch(e){
+            } catch (e) {
                 return reject(e);
             }
         });
     };
 
-    public.getLocalTree = function(){ // Leer arbol de decision desde hosting
-        return new Promise(function(fulfill, reject){
-            $.getJSON("custom/tree.json", function (result) {
-                if(DEBUG) console.log(result);
-                return fulfill(result);
-            }, function (err) {
-                return reject(err);
+    public.getTree = function () { // Leer arbol de decision desde hosting
+        return new Promise(function (fulfill, reject) {
+
+            var getStaticTree = function(){ // Descargar version de hosting
+                $.getJSON("custom/tree.json", function (result) {
+                    if (DEBUG) console.log(result);
+                    return fulfill(result);
+                }, function (err) {
+                    return reject(err);
+                });
+            };
+
+            public.db.getSortedLimited("decisionTrees", "timestamp", 1)
+            .then(function(snapshot){
+                snapshot.forEach(function(data){
+                    if(DEBUG) console.log(data.val());
+                    return fulfill(data.val());
+                })
+            })
+            .catch(function(err){ // Ante error de consulta (puede ser por permisos)
+                if(DEBUG) console.log(err);
+                getStaticTree(); // Tomar datos del archivo de hosting
             });
         });
     };
 
-    public.checkLocation = function(){ // Obtener posiscion del cliente y comparar con filtro
-        return new Promise(function(fulfill, reject){
-            $.getJSON("custom/config.json", function (result) { // Leer config
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position){
-                        // Determinar distancia al centro del area
-                        var deltaX = position.coords.latitude - result.locationFilter.lat;
-                        var deltaY = position.coords.longitude - result.locationFilter.lng;
-                        var range = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+    public.checkLocation = function () { // Obtener posiscion del cliente y comparar con filtro
+        return new Promise(function (fulfill, reject) {
 
-                        if(DEBUG){
+            var check = function (config) { // Realizar el checkeo con la configuracion
+                if(DEBUG) console.log(config);
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        // Determinar distancia al centro del area
+                        var deltaX = position.coords.latitude - config.locationFilter.lat;
+                        var deltaY = position.coords.longitude - config.locationFilter.lng;
+                        var range = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                        if (DEBUG) {
                             console.log("Filtro: Lat.: " + position.coords.latitude + " -- Lng: " + position.coords.longitude);
-                            console.log("Cliente: Lat: " + result.locationFilter.lat + " -- Lng: " + result.locationFilter.lng);
-                            console.log("Distancia: "+range);
+                            console.log("Cliente: Lat: " + config.locationFilter.lat + " -- Lng: " + config.locationFilter.lng);
+                            console.log("Distancia: " + range);
                         }
 
-                        if(range < result.locationFilter.range) // Si esta dentro de rango
+                        if (range < config.locationFilter.range) // Si esta dentro de rango
                             return fulfill();
                         else // Si no pertenece al area de analisis
-                            return reject({msg: "Usuario fuera de area"});
+                            return reject({
+                                msg: "Usuario fuera de area"
+                            });
                     });
                 } else {
-                    return reject({msg:"No se pudo determinar ubicación."});
-                }    
-            }, function (err) {
-                return reject(err);
+                    return reject({
+                        msg: "No se pudo determinar ubicación."
+                    });
+                }
+            };
+
+            var getStaticConfig = function(){ // Leer configuracion del hosting
+                $.getJSON("custom/config.json",
+                    check, // Checkear
+                    function (err) {
+                        return reject(err);
+                    }
+                );
+            };
+
+            public.db.get("locationFilter") // Descargar configuracion de firebase
+            .then(function(config){ // Callback
+                if(config) // Hay datos
+                    check({locationFilter:config}) // Verificar
+                else // Si no hay datos, usar version statica
+                    getStaticConfig();
+            })
+            .catch(function(err){ // Ante error de consulta (puede ser por permisos)
+                if(DEBUG) console.log(err);
+                getStaticConfig(); // Tomar datos de la configuracion estatica
             });
+
+            
         });
     };
 
