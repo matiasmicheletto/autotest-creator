@@ -1,7 +1,73 @@
 <div class="page">
 	<div class="page-content home-page">
+
 		<div class="block">
-			<a href="#!/autotest" class="link external menu-btn button button-raised button-fill button-round">AUTOTEST</a>
+			<h2>Complete sus datos personales</h2>
+		</div>
+
+		<form class="list" id="my-form">
+			<ul>
+				<li>
+					<div class="item-content item-input">
+						<div class="item-inner">
+							<div class="item-title item-label">Nombre</div>
+							<div class="item-input-wrap">
+								<input type="text" name="name" placeholder="Su nombre completo">
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="item-content item-input">
+						<div class="item-inner">
+							<div class="item-title item-label">Edad</div>
+							<div class="item-input-wrap">
+								<input type="number" name="age" placeholder="Edad">
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="item-content item-input">
+						<div class="item-inner">
+							<div class="item-title item-label">DNI/DU/LC/LE/PAS</div>
+							<div class="item-input-wrap">
+								<input type="number" name="dni" placeholder="Identidad">
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="item-content item-input">
+						<div class="item-inner">
+							<div class="item-title item-label">Teléfono</div>
+							<div class="item-input-wrap">
+								<input type="text" name="tel" placeholder="Tel">
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="item-content item-input">
+						<div class="item-inner">
+							<div class="item-title item-label">Género</div>
+							<div class="item-input-wrap">
+								<select name="gender">
+									<option value="m" selected>Masculino</option>
+									<option value="f">Femenino</option>
+									<option value="n">Otro</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</form>
+		
+		<div class="block">
+			<a href="#!/autotest"
+				class="link external menu-btn button button-raised button-fill button-round {{userAllowed ? '':'disabled'}}">Iniciar
+				autotest</a>
 		</div>
 	</div>
 </div>
