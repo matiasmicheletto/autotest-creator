@@ -9,11 +9,14 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="keywords" content="UNS, App">
   	<meta name="author" content="Matías Micheletto">
-  	<link rel="icon" type="image/png" href="assets/img/favicon.ico">
+  	<link rel="icon" type="image/png" href="vendor/img/favicon.ico">
 	
-	<link rel="stylesheet" href="assets/css/framework7.bundle.min.css">
-	<link rel="stylesheet" href="assets/css/framework7.min.css">
-	<link rel="stylesheet" href="assets/css/icons.css">
+	<!-- VENDOR STYLES -->
+	<link rel="stylesheet" href="vendor/css/framework7.bundle.min.css">
+	<link rel="stylesheet" href="vendor/css/framework7.min.css">
+	<link rel="stylesheet" href="vendor/css/icons.css">
+	
+	<!-- CUSTOM STYLES -->
 	<link rel="stylesheet" href="custom/css/style.css">
 </head>
 
@@ -63,12 +66,25 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="assets/js/jquery.min.js"></script>
-	<script type="text/javascript" src="assets/js/angular.min.js"></script>
-	<script type="text/javascript" src="assets/js/angular-sanitize.min.js"></script>
-	<script type="text/javascript" src="assets/js/angular-route.min.js"></script>
-	<script type="text/javascript" src="assets/js/framework7.bundle.min.js"></script>
+
+	<!-- VENDOR ASSETS -->
+	<script type="text/javascript" src="vendor/js/firebase-app.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-analytics.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-firestore.js"></script>
+	
+	
+	<script type="text/javascript" src="vendor/js/jquery.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular-route.min.js"></script>
+	<script type="text/javascript" src="vendor/js/framework7.bundle.min.js"></script>
+	
+	<!-- CUSTOM ASSETS -->
+	<script type="text/javascript" src="custom/js/middleware.js"></script>
+	<script type="text/javascript" src="custom/js/middleware-firestore.js"></script>
 	<script type="text/javascript" src="custom/js/app.js"></script>
+	<script type="text/javascript" src="controllers/home.js"></script>
+	<script type="text/javascript" src="controllers/autotest.js"></script>
 </body>
 
 </html>
