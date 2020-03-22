@@ -5,3 +5,4 @@ gulp copy;
 gulp bundle;
 gulp rename; 
 gulp replace;
+firebase deploy;
