@@ -1,41 +1,22 @@
 app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
     
     //console.log("home");
-
-    $rootScope.logData = {}; // Objeto que se va a cargar a la base de datos al finalizar el test
-    
-    $rootScope.showPreloader("Determinando ubicación...");
-    $scope.formAllowed = false; // Impedir uso del formulario
+    $rootScope.testAllowed = false; // Admite el uso del autotest
 
     // Intentar recuperar los datos guardados
     var localData = localStorage.getItem('userData');
     if(localData)
         $scope.userData = JSON.parse(localData);
-    
-    
-    middleware.checkLocation() // Obtener ubicacion del usuario
-        .then(function (position) { // Usuario dentro del rango
-            $rootScope.hidePreloader();
-            
-            // Registrar ubicacion del usuario
-            $rootScope.logData.lat = position.lat;
-            $rootScope.logData.lng = position.lng;
-
-            $scope.formAllowed = true; // Habilitar completar formulario
-
-            $rootScope.toastSuccess("Su ubicación pertenece al área de estudio.");
-            $rootScope.$apply();
-        })
-        .catch(function (err) { // Usuario fuera del rango
-            console.log(err);
-            $rootScope.hidePreloader();
-            $rootScope.toastError("Su ubicación está fuera del área de estudio.");
-            $rootScope.$apply();
-        });
+  
+    $scope.resetCheck = function(){ // Reinia el estado del checkeo
+        $rootScope.testAllowed = false; // No se puede poner en el ng-change porque es variable de $root
+    };
 
     $scope.checkForm = function () { // Validacion de formulario
 
-        if(!$rootScope.userAllowed){ // Solo realizar el chequeo mientras el usuario no fue habilitado
+        console.log($rootScope.testAllowed);
+
+        if(!$rootScope.testAllowed){ // Solo realizar el chequeo mientras el usuario no fue habilitado
             //console.log($scope.userData);
 
             if (!$scope.userData) {
@@ -78,15 +59,73 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
 
             /* 
             * Si llega hasta aca, completo todos los datos. Verificar si ya cargo un test
-            * Si ya cargo, preguntar si desea modificar su respuesta con la opcion de salir o proceder
+            * Si ya cargo, preguntar si desea modificar su respuesta con la opcion de salir o proceder.
+            * Puede cargar hasta 3 respuestas diferentes (?)
             * Sino, pasar directamente al autotest
             */
 
-            // Guardar los datos de usuario en objeto a registrar en DB
-            for(var k in $scope.userData)
-                $scope.logData[k] = $scope.userData[k];
-            
-            $rootScope.userAllowed = true; // Habilitar usuario a realizar el test
+            var allowAutotest = function(){ // Callback para dar el ok de iniciar el autotest
+                for(var k in $scope.userData) // Guardar los datos de usuario en objeto a registrar en DB
+                    $scope.logData[k] = $scope.userData[k];
+                $rootScope.testAllowed = true; // Habilitar usuario a realizar el test
+                $rootScope.toastSuccess("Habilitado para iniciar el autotest", 1500, "center");
+                $rootScope.$apply();
+            };
+
+            $rootScope.showPreloader("Verificando datos...");
+            middleware.fs.query("results", "dni", "==", $scope.userData.dni, 3)
+            .then(function(results){
+                $rootScope.hidePreloader();
+                // Definir valores por defecto en caso de que la base de datos no traiga nada
+                var limits = {
+                    max: 3,
+                    elapsed: 86400000
+                };
+                if($rootScope.config)
+                    if($rootScope.config.logLimit)
+                        limits = { 
+                            max: $rootScope.config.logLimit.max,
+                            elapsed: $rootScope.config.logLimit.elapsed
+                        };
+                if(results.length >= limits.max){ // Ya hay [max] registros guardados, no puede cargar mas
+                    $rootScope.showDialog("Límite de resultados",
+                        "El DNI indicado ya alcanzó el límite de "+limits.max+" autotests diferentes.",
+                        [{text:"Aceptar"}]
+                    );
+                }else{
+                    if(results.length == 0){ // Si no hay resultados guardados para este dni, iniciar
+                        allowAutotest();
+                    }else{ // Si hay entre 0 y 3 resultados, revisar fecha del ultimo
+                        // Obtener maximo
+                        var lastTimestamp = 0;
+                        for(var k in results){
+                            if(results[k].timestamp > lastTimestamp)
+                                lastTimestamp = results[k].timestamp;
+                        }
+                        if(Date.now() - lastTimestamp < limits.elapsed){
+                            $rootScope.showDialog("Límite de resultados",
+                                "Debe transcurrir 24hs. desde la última vez que realizó el autotest para realizar uno nuevo.",
+                                [{text:"Aceptar"}]
+                            );
+                        }else{
+                            $rootScope.showDialog("Se encontraron registros",
+                                "El DNI indicado ya registró <b>"+results.length+"</b> resultado/s. Puede realizar un máximo de 3.",
+                                [{
+                                    text: "Aceptar",
+                                    onClick: function() {
+                                        allowAutotest();
+                                    }
+                                }]
+                            );
+                        }
+                    }
+                }
+            })
+            .catch(function (err) { 
+                console.log(err);
+                $rootScope.hidePreloader();
+                $rootScope.$apply();
+            });
         }
     };
 }]);

@@ -61,7 +61,8 @@
 				},
 				{
 					"text":"Finalizar",
-					"goto":"-1"
+					"goto":"-1",
+					"exitCode": "S001"
 				}
 			]
 		},
@@ -72,11 +73,13 @@
 				{
 					"text":"Llamar 148",
 					"href":"tel:148",
-					"color":"#B40404"
+					"color":"#B40404",
+					"exitCode": "S002"
 				},
 				{
 					"text":"Finalizar",
-					"goto":"-1"
+					"goto":"-1",
+					"exitCode": "S002"
 				}
 			]
 		}

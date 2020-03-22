@@ -24,7 +24,9 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
         console.log(err);
     });
 
-    $scope.loadMenu = function (index) { // Callback de los botones
+    $scope.loadMenu = function (index, exitCode) { // Callback de los botones
+        if(exitCode) // Registrar si hay codigo de finalizacion
+            $rootScope.logData.exitCode = exitCode;
         if(index == -1){ // Indicador de finalizacion del test
             $scope.endTest();
         }else{ // Pasar a la siguiente vista
@@ -39,6 +41,30 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
     };
 
     $scope.endTest = function(){ // Callback de finalizacion del test
-        console.log($rootScope.logData);
+        $rootScope.logData.timestamp = Date.now(); // Estampa de tiempo de realizacion
+
+        //console.log($rootScope.logData);
+
+        $rootScope.showPreloader("Enviando resultados...");
+        middleware.fs.add($rootScope.logData, "results")
+        .then(function(){
+            // Fijar un mensaje
+            $scope.current = {
+                header: "Gracias por completar el test",
+                content: "Si desea cambiar sus respuestas, puede repetir el test dentro de 24hs.",
+                options:[
+                    {
+                        text:"Menú principal",
+                        href:"#!/"
+                    }
+                ]
+            };
+            $rootScope.hidePreloader();
+            $scope.$apply();
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+
     };
 }]);

@@ -10,7 +10,7 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
                 controller: "autotest",
                 resolve: { // Verificar que el usuario puede realizar el autotest
                     check: ['$rootScope', '$location', function ($rootScope, $location) {
-                        if ($rootScope.userAllowed)
+                        if ($rootScope.testAllowed)
                             $location.path('/autotest');
                         else
                             $location.path('/');
@@ -51,33 +51,68 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
             f7.panel.close(document.getElementById("panel-menu"), true);
         };
 
-        $rootScope.toastSuccess = function (message, timeout) {
+        $rootScope.showDialog = function(title, message, buttons){ // Mostrar un dialogo de confirmacion
+            f7.dialog.create({
+                title: title,
+                text: message,
+                buttons: buttons,
+                destroyOnClose: true
+            }).open();
+        };
+
+        $rootScope.toastSuccess = function (message, timeout, position) {
             f7.toast.create({
                 text: message,
+                position: position || "bottom",
                 closeTimeout: timeout || 2000,
                 destroyOnClose: true,
                 cssClass: "toast-success"
             }).open();
         };
         
-        $rootScope.toastError = function (message, timeout) {
+        $rootScope.toastError = function (message, timeout, position) {
             f7.toast.create({
                 text: message,
+                position: position || "bottom",
                 closeTimeout: timeout || 2000,
                 destroyOnClose: true,
                 cssClass: "toast-error"
             }).open();
         };
 
-        $rootScope.userAllowed = false; // Admite el uso del autotest
-
-        $rootScope.showPreloader("Cargando...");
-
-        // Iniciar servicios de backend
+        $rootScope.userAllowed = false; // Bloquea al usuario si no esta dentro del circulo de acceso
+        $rootScope.testAllowed = false; // Admite el uso del autotest
+        
+        // Iniciar servicios de backend y descargar config
+        $rootScope.showPreloader("Cargando...")
         middleware.init()
-            .then(function (res) {
-                console.log(res);
+            .then(function (config) {
+                console.log(config);
+                $rootScope.config = config;
                 $rootScope.hidePreloader();
+
+                // Verificar que el usuario esta dentro del circulo de uso de la app
+                $rootScope.logData = {}; // Objeto que se va a cargar a la base de datos al finalizar el test
+                $rootScope.showPreloader("Determinando ubicación...");
+                middleware.checkLocation($rootScope.config) // Obtener ubicacion del usuario (tambien descarga y actualiza configuracion)
+                    .then(function (result) { // Usuario dentro del rango
+                        $rootScope.hidePreloader();
+                        
+                        // Registrar ubicacion del usuario
+                        $rootScope.logData.lat = result.lat;
+                        $rootScope.logData.lng = result.lng;
+            
+                        $rootScope.userAllowed = true; // Habilitar completar formulario
+            
+                        $rootScope.toastSuccess("Su ubicación pertenece al área de estudio.");
+                        $rootScope.$apply();
+                    })
+                    .catch(function (err) { // Usuario fuera del rango
+                        console.log(err);
+                        $rootScope.hidePreloader();
+                        $rootScope.toastError("Su ubicación está fuera del área de estudio.");
+                        $rootScope.$apply();
+                    });
             })
             .catch(function (err) {
                 console.log(err);

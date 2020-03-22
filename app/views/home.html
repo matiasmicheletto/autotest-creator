@@ -32,7 +32,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">DNI/DU/LC/LE/PAS</div>
 							<div class="item-input-wrap">
-								<input type="number" name="dni" placeholder="Identidad" ng-model="userData.dni">
+								<input type="number" name="dni" placeholder="Identidad" ng-model="userData.dni" ng-change="resetCheck()">
 							</div>
 						</div>
 					</div>
@@ -66,12 +66,12 @@
 		
 		<div class="block">
 			<div class="menu-btn-container row">
-				<a href="#!/autotest" class="menu-btn button button-raised button-fill button-round {{formAllowed ? '':'disabled'}}" ng-click="checkForm()">
+				<a href="#!/autotest" class="menu-btn button button-raised button-fill button-round {{userAllowed ? '':'disabled'}}" ng-click="checkForm()">
 					Verificar
 				</a>
 			</div>
 			<div class="menu-btn-container row">
-				<a href="#!/autotest" class="link external menu-btn button button-raised button-fill button-round {{userAllowed ? '':'disabled'}}" style="background-color:darkgreen">
+				<a href="#!/autotest" class="link external menu-btn button button-raised button-fill button-round {{testAllowed ? '':'disabled'}}" style="background-color:darkgreen">
 					Iniciar autotest
 				</a>
 			</div>
