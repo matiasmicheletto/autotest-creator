@@ -17,17 +17,14 @@ gulp.task('clean', function(){
 // Copiar librerias, vistas, manifest, configuraciones e index.html a la carpeta de produccion
 gulp.task('copy', function () {
   var paths = [
-    { src: './src/assets/vendor/**/*', dest: './public/assets/vendor' },
-    { src: './src/images/**/*', dest: './public/images' },
-    { src: './src/probador/**/*', dest: './public/probador' },
-    { src: './src/views/**/*', dest: './public/views' },
-    { src: './src/style/**/*', dest: './public/style' },
-    { src: './src/firebase-messaging-sw.js', dest: './public/' },
-    { src: './src/manifest.json', dest: './public/' },
-    { src: './src/pwabuilder-sw.js', dest: './public/' },
-    { src: './src/pwabuilder-sw-register.js', dest: './public/' },
-    { src: './src/manup.min.js', dest: './public/' },
-    { src: './src/index.html', dest: './public/' }
+    { src: './app/views/**/*', dest: './public/views' },
+    { src: './app/assets/vendor/**/*', dest: './public/assets/vendor' },
+    { src: './app/custom/css/**/*', dest: './public/custom/css' },
+    { src: './app/custom/img/**/*', dest: './public/custom/img' },
+    { src: './app/manifest.json', dest: './public/' },
+    { src: './app/pwabuilder-sw.js', dest: './public/' },
+    { src: './app/manup.min.js', dest: './public/' },
+    { src: './app/index.html', dest: './public/' }
   ];
 
   var tasks = paths.map(function (path) {
@@ -56,31 +53,11 @@ gulp.task('rename',function(){
 // Reemplazar dependencias que se importan en el index.html y alternar version de test por produccion
 gulp.task('replace', function(){
   gulp.src(['./public/index.html'])
-    .pipe(replace('<script type="text/javascript" src="assets/custom/cipressus.js"></script>', '<script type="text/javascript" src="main.js?v=1"></script>'))
-    .pipe(replace('<script type="text/javascript" src="assets/custom/cipressus-utils.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="assets/custom/cipressus-hardware.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="assets/custom/cipressus-test-fs.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/index.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/testResults.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/login.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/home.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/dashboard.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/calendar.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/sources.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/submissions.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/hardware.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/analizer.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/simulator.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/kMaps.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/tables.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/users.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/stats.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/attendance.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/activities.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/courses.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/editor.js"></script>', ''))
-    .pipe(replace('<script type="text/javascript" src="controllers/profile.js"></script>', ''))
-    .pipe(replace('<!-- ##################### CUSTOM LIB ##################### -->', ''))
-    .pipe(replace('<!-- ##################### CONTROLLERS ##################### -->', ''))
+    .pipe(replace('<script type="text/javascript" src="custom/js/middleware.js"></script>', '<script type="text/javascript" src="main.js?v=1"></script>'))
+    .pipe(replace('<script type="text/javascript" src="custom/js/middleware-db.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="custom/js/middleware-firestore.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="custom/js/app.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="controllers/home.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="controllers/autotest.js"></script>', ''))
     .pipe(gulp.dest('./public'));
 });
