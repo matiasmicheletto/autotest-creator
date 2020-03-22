@@ -47,24 +47,48 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
 
         $rootScope.showPreloader("Enviando resultados...");
         middleware.fs.add($rootScope.logData, "results")
-        .then(function(){
-            // Fijar un mensaje
-            $scope.current = {
-                header: "Gracias por completar el test",
-                content: "Si desea cambiar sus respuestas, puede repetir el test dentro de 24hs.",
-                options:[
-                    {
-                        text:"Menú principal",
-                        href:"#!/"
-                    }
-                ]
-            };
-            $rootScope.hidePreloader();
-            $scope.$apply();
-        })
-        .catch(function(err){
-            console.log(err);
-        });
-
+            .then(function(){
+                // Fijar un mensaje
+                $scope.current = {
+                    header: "Gracias por completar el test",
+                    content: "Si desea cambiar sus respuestas, puede repetir el test dentro de 24hs.",
+                    options:[
+                        {
+                            text:"Menú principal",
+                            href:"#!/"
+                        }
+                    ]
+                };
+                $rootScope.hidePreloader();
+                $scope.$apply();
+            })
+            .catch(function(err){ // Si hay error en la carga del resultado, registrar problema
+                console.log(err);
+                $scope.current = {
+                    header: "El resultado no pudo registrarse",
+                    content: "Hemos enviado datos del problema para tabajar en la solución. Vuelva a intentarlo más tarde.",
+                    options:[
+                        {
+                            text:"Menú principal",
+                            href:"#!/"
+                        }
+                    ]
+                };
+                var errorLog = {
+                    errMsg: JSON.stringify(err),
+                    timestamp: Date.now(),
+                    origin: "autotest.js/$scope.endTest"
+                };
+                middleware.fs.add(errorLog, "errorLogs")
+                    .then(function(){
+                        $rootScope.hidePreloader();
+                        $scope.$apply();
+                    })
+                    .catch(function(err2){ // Error en el registro de error ya es demasiado
+                        console.log(err2);
+                        $rootScope.hidePreloader();
+                        $scope.$apply();
+                    });
+            });
     };
 }]);

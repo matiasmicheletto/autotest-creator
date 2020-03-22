@@ -114,7 +114,45 @@ En este proyecto se intenta implementar:
 }
 ```
 
+## Reglas de seguridad Firestore
+```
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /results/{document=**} {
+      allow read: if true;
+      allow create: 
+        if request.resource.data.exitCode is string && 
+           request.resource.data.dni is number &&
+           request.resource.data.dni > 1000000 &&
+           request.resource.data.actionStack is list;
+    }
+    match /errorLogs/{document=**} {
+      allow read: if false;
+      allow create: 
+        if request.resource.data.errorMsg is string && 
+           request.resource.data.origin is string &&
+           request.resource.data.timestamp is number;
+    }
+  }
+}
+```
 
+## Reglas de seguridad Realtime Database
+```
+{
+  "rules": {
+    "config":{
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "decisionTrees":{
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": "timestamp"
+    }
+  }
+}
+```
 
 ## Contacto:
 
