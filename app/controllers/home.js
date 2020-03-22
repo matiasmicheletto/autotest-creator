@@ -5,8 +5,12 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
 
     // Intentar recuperar los datos guardados
     var localData = localStorage.getItem('userData');
+    console.log(localData);
     if(localData)
         $scope.userData = JSON.parse(localData);
+    else
+        $scope.userData = {};
+
   
     $scope.resetCheck = function(){ // Reinicia el estado del checkeo
         $rootScope.testAllowed = false; // No se puede poner en el ng-change porque es variable de $root
