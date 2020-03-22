@@ -14,8 +14,6 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
 
     $scope.checkForm = function () { // Validacion de formulario
 
-        console.log($rootScope.testAllowed);
-
         if(!$rootScope.testAllowed){ // Solo realizar el chequeo mientras el usuario no fue habilitado
             //console.log($scope.userData);
 
