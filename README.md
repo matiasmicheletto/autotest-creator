@@ -133,6 +133,14 @@ service cloud.firestore {
            request.resource.data.origin is string &&
            request.resource.data.timestamp is number;
     }
+    match /stats/{document=**} {
+      allow read: if false;
+      allow update: if true;
+    }
+    match /pathStats/{document=**} {
+      allow read: if false;
+      allow update: if true;
+    }
   }
 }
 ```
