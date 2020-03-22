@@ -112,7 +112,7 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
                             );
                         }else{
                             $rootScope.showDialog("Se encontraron registros",
-                                "El DNI indicado ya registró <b>"+results.length+"</b> resultado/s. Puede realizar un máximo de 3.",
+                                "El DNI indicado ya registró <b>"+results.length+"</b> resultado/s. Puede realizar un máximo de "+$rootScope.config.logLimit.max+".",
                                 [{
                                     text: "Aceptar",
                                     onClick: function() {

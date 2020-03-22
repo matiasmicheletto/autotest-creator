@@ -47,31 +47,32 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
 
         // Incrementar contadores para estadistica 
         if($rootScope.firstTest){ // Para los datos que no cambian (edad, genero) se cuenta la primera vez
+            // Para histograma de edades
             var age = $rootScope.logData.age;
             var updAgeObj = {}; // Objeto de actualizacion
             updAgeObj["range_"+((age - age % 10)/10)] = firebase.firestore.FieldValue.increment(1); // incrementador de rango (range_0, range_1, ...)
-            
+            middleware.fs.update(updAgeObj,"stats","ages");
+
+            // Para porcentajes de sexo
             var updGndrObj = {}; // Objeto de actualizacion
             updGndrObj[$rootScope.logData.gender] = firebase.firestore.FieldValue.increment(1);
-                
-            middleware.fs.update(updAgeObj,"stats","ages");
             middleware.fs.update(updGndrObj,"stats","genders");
         }
 
+        // Para contadores de resultado final
         var updCodeObj = {}; // Objeto de actualizacion
         updCodeObj[$rootScope.logData.exitCode] = firebase.firestore.FieldValue.increment(1);
+        middleware.fs.update(updCodeObj,"stats","exitCodes");
 
-        var updPathObj = {};
-        updPathObj[$rootScope.logData.treeID] = {}; // Contadores de caminos para cada arbol
+        // Para contadores de caminos recorridos
+        var updPathObj = {}; // Contadores de caminos para cada arbol
         var path = "P_0";
         for(var k = 1; k < $rootScope.logData.actionStack.length; k++){
             path += "_"+$rootScope.logData.actionStack[k].index;
-            updPathObj[$rootScope.logData.treeID][path] = firebase.firestore.FieldValue.increment(1);
+            updPathObj[path] = firebase.firestore.FieldValue.increment(1);
             path = "P_"+$rootScope.logData.actionStack[k].index;
         }
-        middleware.fs.update(updCodeObj,"stats","exitCodes");
-        middleware.fs.update(updPathObj,"stats","paths");
-
+        middleware.fs.update(updPathObj,"pathStats",$rootScope.logData.treeID);
 
         // Registrar objeto de resultado
         middleware.fs.add($rootScope.logData, "results")
