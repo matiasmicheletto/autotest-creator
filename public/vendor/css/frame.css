@@ -1,0 +1,120 @@
+body, html {
+  width: 100%;
+  margin: 5px 0;
+  text-align: center;
+}
+body {
+  font-family: -apple-system,BlinkMacSystemFont,SF UI Text,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+iframe {
+  width: 375px;
+  height: calc(812px - 60px);
+  margin: 0;
+  border: none;
+  right: 0;
+  top: 0;
+  transform: scale(0.8);
+  transform-origin: 0 0;
+  position: absolute;
+  left: 0;
+  padding-top: 36px;
+}
+.container {
+  font-size: 0.8px;
+  margin-top:45px;
+}
+.top-safe-area {
+  height: 18px;
+  background: #000;
+  padding-top: 12px;
+  position: absolute;
+  z-index: 5;
+  width: 100%;
+  transition: opacity 0.4s ease-in-out;
+  opacity: 1;
+  display: block;
+}
+.transparent-status-bar-animation {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+.transparent-status-bar {
+  display: none;
+}
+.top-safe-area img {
+  width: 275px;
+  margin-left: 2px;
+}
+.black-top-safe-area {
+  background: #1b1b1b;
+}
+.black-bottom-safe-area {
+  background: #151515;
+}
+.grey-top-safe-area {
+  background: #999999;
+  transition: all 0.4s ease-in-out;
+}
+.grey-bottom-safe-area {
+  background: #999999;
+  transition: all 0.4s ease-in-out;
+}
+.black-bottom-safe-area .home-bar {
+  background: #fff;
+}
+.black-screen {
+  background: #151515 !important;
+}
+.grey-screen {
+  background: #999999 !important;
+  transition: all 0.4s ease-in-out;
+}
+.bottom-safe-area {
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #000;
+}
+.home-bar {
+  height: 4px;
+  background: #171818;
+  border-radius: 5px;
+  width: 110px;
+  position: absolute;
+  right: 0;
+  left: 0;
+  margin: auto auto;
+  top: 0;
+  bottom: 0;
+}
+.columns {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.left, .right {
+  width: 200px;
+}
+.left img {
+  width: 250px;
+}
+.right img {
+  width: 200px;
+}
+.right div {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .columns {
+    flex-direction: column;
+  }
+  .left {
+    margin: 40px;
+  }
+  .right {
+    margin: 40px;
+  }
+}

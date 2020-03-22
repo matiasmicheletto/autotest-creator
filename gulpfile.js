@@ -1,5 +1,7 @@
 // Instalacion de modulos:
-// npm install gulp@3.9.1 del merge-stream gulp-bundle-assets gulp-ng-annotate gulp-rename gulp-replace
+// $ npm install gulp@3.9.1 del merge-stream gulp-bundle-assets gulp-ng-annotate gulp-rename gulp-replace
+// Para ubuntu:
+// $ export PATH=~/.npm-global/bin:$PATH
 
 const gulp = require('gulp');
 const del = require('del');
@@ -18,7 +20,7 @@ gulp.task('clean', function(){
 gulp.task('copy', function () {
   var paths = [
     { src: './app/views/**/*', dest: './public/views' },
-    { src: './app/assets/vendor/**/*', dest: './public/assets/vendor' },
+    { src: './app/vendor/**/*', dest: './public/vendor' },
     { src: './app/custom/css/**/*', dest: './public/custom/css' },
     { src: './app/custom/img/**/*', dest: './public/custom/img' },
     { src: './app/manifest.json', dest: './public/' },

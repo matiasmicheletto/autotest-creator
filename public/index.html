@@ -1,50 +1,109 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 
 <head>
-  <title>Autotest COVID-19 UNS</title>
+	<title>Autotest COVID-19</title>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="keywords" content="UNS, App">
-  <meta name="author" content="Matías Micheletto">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <link rel="icon" type="image/png" href="../app/vendor/img/favicon.ico">
-  <link rel="stylesheet" href="../app/vendor/css/devices.min.css" type="text/css">
-  <link rel="stylesheet" href="../app/vendor/css/frame.css" type="text/css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="keywords" content="UNS, App">
+  	<meta name="author" content="Matías Micheletto">
+  	<link rel="icon" type="image/png" href="vendor/img/favicon.ico">
+	
+	<!-- VENDOR STYLES -->
+	<link rel="stylesheet" href="vendor/css/framework7.bundle.min.css">
+	<link rel="stylesheet" href="vendor/css/framework7.min.css">
+	<link rel="stylesheet" href="vendor/css/icons.css">
+	
+	<!-- CUSTOM STYLES -->
+	<link rel="stylesheet" href="custom/css/style.css">
+
+	<!-- Web manifest -->
+    <link rel="manifest" href="manifest.json"></link>
+    <!-- PWA Service Worker -->
+    <script>
+        if(navigator.serviceWorker){ // Por si no es localhost
+            if (navigator.serviceWorker.controller)
+                console.log('[PWA Builder] se encontró service worker activo, no hace falta registrar.')
+            else
+                navigator.serviceWorker.register('pwabuilder-sw.js', {scope: './'})
+                .then(function(reg){
+                    console.log('Service worker registrado, scope:'+ reg.scope);
+                });
+        }   
+    </script>
+    <script src="manup.min.js"></script> 
+
 </head>
 
-<body>
-  <div class="columns">
-    <div class="container">
-      <div class="marvel-device iphone-x">
-        <div class="notch">
-          <div class="camera"></div>
-          <div class="speaker"></div>
-        </div>
-        <div class="top-bar"></div>
-        <div class="sleep"></div>
-        <div class="bottom-bar"></div>
-        <div class="volume"></div>
-        <div class="overflow">
-          <div class="shadow shadow--tr"></div>
-          <div class="shadow shadow--tl"></div>
-          <div class="shadow shadow--br"></div>
-          <div class="shadow shadow--bl"></div>
-        </div>
-        <div class="inner-shadow"></div>
-        <div class="screen">
-          <div class="top-safe-area"><img src="../app/assets/img/status-bar.svg" alt=""></div>
-          <iframe src="../app/index.html" style="overflow:hidden"></iframe>
-          <div class="bottom-safe-area">
-            <div class="home-bar"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+<body ng-app="autotest">
+	<div id="app">
+		<div class="view">
+			<div class="page">
 
-  </div>
+				<!-- Top Navbar -->
+				<div class="navbar">
+					<div class="navbar-bg"></div>
+					<div class="navbar-inner">
+						<div class="title">
+							<i class="material-icons panel-open" style="cursor: pointer;">menu</i>
+							Autotest COVID-19
+						</div>
+						<div class="right" style="padding-right: 10px">
+							<img class="app-logo" src="custom/img/logoUNS.png" height="40px" width="40px" />
+						</div>
+					</div>
+				</div>
+
+				<div id="panel-menu" class="panel panel-left panel-cover panel-init">
+					<div class="block">
+
+						<h4>MENU</h4>
+
+						<div class="list links-list">
+							<ul>
+								<li>
+									<a ng-click="closePanel()" class="link external panel-close" href="#!/">Autotest</a>
+								</li>
+								<li>
+									<a ng-click="closePanel()" class="link external panel-close" href="#!/contact_us">Contacto</a>
+								</li>
+								<li>
+									<a ng-click="closePanel()" class="link external panel-close" href="#!/about">Acerca de</a>
+								</li>
+							</ul>
+						</div>
+
+					</div>
+				</div>
+
+				<ng-view class="view-main"></ng-view>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- VENDOR ASSETS -->
+	<script type="text/javascript" src="vendor/js/firebase-app.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-analytics.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-firestore.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-database.js"></script>
+	
+	<script type="text/javascript" src="vendor/js/jquery.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular-route.min.js"></script>
+	<script type="text/javascript" src="vendor/js/framework7.bundle.min.js"></script>
+	
+
+	<!-- CUSTOM ASSETS -->
+	<script type="text/javascript" src="main.js?v=1"></script>
+	
+	
+	
+	
+	
 </body>
 
 </html>

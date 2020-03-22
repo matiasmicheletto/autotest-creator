@@ -28,7 +28,7 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
         // Ver: https://stackoverflow.com/questions/39480969/angular-interpolateinterr-error-when-adding-url-from-variable
         return $sce.trustAsResourceUrl;
     }])
-    .run(function ($rootScope) {
+    .run(["$rootScope", function ($rootScope) {
 
         // Inicializacion y componentes de F7
         var f7 = new Framework7({ // Libreria de estilos
@@ -117,4 +117,4 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
             .catch(function (err) {
                 console.log(err);
             });
-    });
+    }]);

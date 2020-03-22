@@ -1,0 +1,25 @@
+.card {
+	width:100%;
+	max-width: 500px;
+	margin: auto;
+	background-color:#eeeeee;
+}
+
+.menu-btn-container{
+	padding-bottom: 10px;
+}
+
+.menu-btn {
+	width:100%;
+	max-width: 400px;
+	margin:0 auto;
+	display: block;
+}
+
+.toast-success {
+	background-color: darkgreen;
+}
+
+.toast-error {
+	background-color: darkred;
+}
