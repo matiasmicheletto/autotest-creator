@@ -10,9 +10,16 @@
 }
 
 .menu-btn {
-	width:100%;
+	width: 100%;
 	max-width: 400px;
 	margin:0 auto;
+	display: block;
+}
+
+.form-container {
+	width: 100%;
+	max-width: 600px;
+	margin: 0 auto;
 	display: block;
 }
 
