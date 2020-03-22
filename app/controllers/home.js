@@ -92,6 +92,7 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
                     );
                 }else{
                     if(results.length == 0){ // Si no hay resultados guardados para este dni, iniciar
+                        $rootScope.firstTest = true; // Testigo para habilitar contadores de estadistica
                         allowAutotest();
                     }else{ // Si hay entre 0 y 3 resultados, revisar fecha del ultimo
                         // Obtener maximo
@@ -102,7 +103,7 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
                         }
                         if(Date.now() - lastTimestamp < limits.elapsed){
                             $rootScope.showDialog("Límite de resultados",
-                                "Debe transcurrir 24hs. desde la última vez que realizó el autotest para realizar uno nuevo.",
+                                "Debe transcurrir "+Math.round($rootScope.config.logLimit.elapsed/3600000)+"hs. desde la última vez que realizó el autotest para realizar uno nuevo.",
                                 [{text:"Aceptar"}]
                             );
                         }else{

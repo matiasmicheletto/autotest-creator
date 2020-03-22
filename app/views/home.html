@@ -23,7 +23,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">Edad</div>
 							<div class="item-input-wrap">
-								<input type="number" name="age" placeholder="Edad" ng-model="userData.age">
+								<input type="number" name="age" placeholder="Edad" ng-model="userData.age" min="0" max="120" step="1">
 							</div>
 						</div>
 					</div>
@@ -33,7 +33,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">DNI/DU/LC/LE/PAS</div>
 							<div class="item-input-wrap">
-								<input type="number" name="dni" placeholder="Identidad" ng-model="userData.dni" ng-change="resetCheck()">
+								<input type="number" name="dni" placeholder="Identidad" ng-model="userData.dni" ng-change="resetCheck()" min="1000000" max="200000000" step="1">
 							</div>
 						</div>
 					</div>

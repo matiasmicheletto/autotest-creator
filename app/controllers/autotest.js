@@ -42,16 +42,44 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
 
     $scope.endTest = function(){ // Callback de finalizacion del test
         $rootScope.logData.timestamp = Date.now(); // Estampa de tiempo de realizacion
-
-        //console.log($rootScope.logData);
-
+        
         $rootScope.showPreloader("Enviando resultados...");
+
+        // Incrementar contadores para estadistica 
+        if($rootScope.firstTest){ // Para los datos que no cambian (edad, genero) se cuenta la primera vez
+            var age = $rootScope.logData.age;
+            var updAgeObj = {}; // Objeto de actualizacion
+            updAgeObj["range_"+((age - age % 10)/10)] = firebase.firestore.FieldValue.increment(1); // incrementador de rango (range_0, range_1, ...)
+            
+            var updGndrObj = {}; // Objeto de actualizacion
+            updGndrObj[$rootScope.logData.gender] = firebase.firestore.FieldValue.increment(1);
+                
+            middleware.fs.update(updAgeObj,"stats","ages");
+            middleware.fs.update(updGndrObj,"stats","genders");
+        }
+
+        var updCodeObj = {}; // Objeto de actualizacion
+        updCodeObj[$rootScope.logData.exitCode] = firebase.firestore.FieldValue.increment(1);
+
+        var updPathObj = {};
+        updPathObj[$rootScope.logData.treeID] = {}; // Contadores de caminos para cada arbol
+        var path = "P_0";
+        for(var k = 1; k < $rootScope.logData.actionStack.length; k++){
+            path += "_"+$rootScope.logData.actionStack[k].index;
+            updPathObj[$rootScope.logData.treeID][path] = firebase.firestore.FieldValue.increment(1);
+            path = "P_"+$rootScope.logData.actionStack[k].index;
+        }
+        middleware.fs.update(updCodeObj,"stats","exitCodes");
+        middleware.fs.update(updPathObj,"stats","paths");
+
+
+        // Registrar objeto de resultado
         middleware.fs.add($rootScope.logData, "results")
             .then(function(){
                 // Fijar un mensaje
                 $scope.current = {
                     header: "Gracias por completar el test",
-                    content: "Si desea cambiar sus respuestas, puede repetir el test dentro de 24hs.",
+                    content: "Si desea actualizar sus respuestas, puede repetir el test dentro de "+Math.round($rootScope.config.logLimit.elapsed/3600000)+" horas.",
                     options:[
                         {
                             text:"Menú principal",
@@ -62,8 +90,9 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
                 $rootScope.hidePreloader();
                 $scope.$apply();
             })
-            .catch(function(err){ // Si hay error en la carga del resultado, registrar problema
+            .catch(function(err){ // Si hay error en la carga del resultado, registrar problema en db
                 console.log(err);
+                // Indicar al usuario del error ocurrido
                 $scope.current = {
                     header: "El resultado no pudo registrarse",
                     content: "Hemos enviado datos del problema para tabajar en la solución. Vuelva a intentarlo más tarde.",

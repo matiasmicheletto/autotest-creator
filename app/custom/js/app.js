@@ -82,6 +82,7 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
 
         $rootScope.userAllowed = false; // Bloquea al usuario si no esta dentro del circulo de acceso
         $rootScope.testAllowed = false; // Admite el uso del autotest
+        $rootScope.firstTest = false; // Indica si es el primer test que realiza esa persona con ese DNI
         
         // Iniciar servicios de backend y descargar config
         $rootScope.showPreloader("Cargando...")
