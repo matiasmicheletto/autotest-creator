@@ -81,11 +81,11 @@ window.middleware = (function () {
                 });
             };
 
-            public.db.getSortedLimited("decisionTrees", "timestamp", 1)
+            public.db.query("decisionTrees", "active", true)
                 .then(function (snapshot) {
                     snapshot.forEach(function (data) {
                         if (DEBUG) console.log(data.val());
-                        return fulfill(data.val());
+                        return fulfill(data.val()); // Tomar el primero
                     })
                 })
                 .catch(function (err) { // Ante error de consulta (puede ser por permisos)
@@ -99,10 +99,25 @@ window.middleware = (function () {
         return new Promise(function (fulfill, reject) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
+
+                    var haversine = function (latlng1, latlng2){  // Distancia en kilometros entre dos coordenadas
+                        // https://stackoverflow.com/questions/639695/how-to-convert-latitude-or-longitude-to-meters
+                        const R = 6378.137; // Radio de la tierra
+                        const dLat = latlng2.lat * Math.PI / 180 - latlng1.lat * Math.PI / 180;
+                        const dLon = latlng2.lng * Math.PI / 180 - latlng1.lng * Math.PI / 180;
+                        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                            Math.cos(latlng1.lat * Math.PI / 180) * Math.cos(latlng2.lat * Math.PI / 180) *
+                            Math.sin(dLon/2) * Math.sin(dLon/2);
+                        return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+                    };
+
                     // Determinar distancia al centro del area
-                    var deltaX = position.coords.latitude - config.locationFilter.lat;
-                    var deltaY = position.coords.longitude - config.locationFilter.lng;
-                    var range = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    var userLatLng = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    var range = haversine(config.locationFilter, userLatLng); // Distancia entre el usuario y el centro del area
 
                     if (DEBUG) {
                         console.log("Filtro: Lat.: " + position.coords.latitude + " -- Lng: " + position.coords.longitude);
@@ -110,7 +125,7 @@ window.middleware = (function () {
                         console.log("Distancia: " + range);
                     }
 
-                    if (range < config.locationFilter.range) // Si esta dentro de rango, retornar posicion
+                    if (range < config.locationFilter.range) // Si esta dentro de rango, retornar posicion del usuario
                         return fulfill({
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
