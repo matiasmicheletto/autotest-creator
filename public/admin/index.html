@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Admin - Autotest COVID-19</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="keywords" content="UNS, App, COVID-19, Autotest">
+  	<meta name="author" content="Matías Micheletto">
+  	<link rel="icon" type="image/png" href="vendor/img/favicon.ico">
+	
+	<!-- VENDOR STYLES -->
+	<link rel="stylesheet" href="vendor/css/icons.css">
+	<link rel="stylesheet" href="vendor/css/bootstrap.min.css">
+	<link rel="stylesheet" href="vendor/css/toastr.min.css">
+	<link rel="stylesheet" href="vendor/css/vis.min.css">
+	<link rel="stylesheet" href="vendor/css/leaflet.css">
+	
+	<!-- CUSTOM STYLES -->
+	<link rel="stylesheet" href="custom/css/style.css">
+
+</head>
+
+<body ng-app="autotest-admin">
+	
+	<title>Panel de administrador</title>
+
+	<!-- ##################### PRELOADER ##################### -->
+	<div class="loader-wrapper-pre" ng-show="loading">
+        <h3 class="loader-text text-light" ng-bind-html="loading_message"></h3>
+        <div class="loader-wrapper">
+            <div class="lds-dual-ring">
+                <div style="top:50%;"></div>
+                <div style="top:50%;"></div>
+                <div style="top:50%;"></div>
+                <div style="top:50%;"></div>
+            </div>
+        </div>
+    </div>
+
+	<!-- ##################### NAVBAR ##################### -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" ng-cloak ng-if="userLogged">
+	  <a class="navbar-brand" href=""><img width="50" height="50"  src="custom/img/backgroundUNS.png"></a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+		  <li class="nav-item {{currentLocation == 'dashboard' ? 'active' : ''}}"><a class="nav-link" href="#!/" ng-click="currentLocation='dashboard'">Tablero</a></li>
+		  <li class="nav-item {{currentLocation == 'config' ? 'active' : ''}}"><a class="nav-link" href="#!/config" ng-click="currentLocation='config'">Configuración</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li class="nav-item" style="cursor: pointer;" title="Salir"><a class="nav-link" ng-click="logout()"><i class="material-icons">power_settings_new</i></a></li>
+		  </ul>
+	  </div>
+	</nav>
+  
+	<!-- ##################### VIEWS ##################### -->
+	<ng-view></ng-view>
+
+	<!-- ##################### AYUDA ##################### -->
+	<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4>Ayuda</h4>
+				</div>
+				<div class="modal-body" ng-bind-html="helpContent"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- VENDOR ASSETS -->
+	<script type="text/javascript" src="vendor/js/firebase-app.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-analytics.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-auth.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-firestore.js"></script>
+	<script type="text/javascript" src="vendor/js/firebase-database.js"></script>
+	
+	<script type="text/javascript" src="vendor/js/jquery.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="vendor/js/angular-route.min.js"></script>
+	<script type="text/javascript" src="vendor/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="vendor/js/toastr.min.js"></script>
+	<script type="text/javascript" src="vendor/js/moment.min.js"></script>
+	<script type="text/javascript" src="vendor/js/leaflet.js"></script>
+	<script type="text/javascript" src="vendor/js/chart.bundle.js"></script>
+	<script type="text/javascript" src="vendor/js/vis.min.js"></script>
+
+	<!-- CUSTOM ASSETS -->
+	<script type="text/javascript" src="main.js?v=1"></script>
+	
+	
+	
+	
+	
+	
+	
+	
+</body>
+
+</html>

@@ -19,6 +19,11 @@ gulp.task('clean', function(){
 // Copiar librerias, vistas, manifest, configuraciones e index.html a la carpeta de produccion
 gulp.task('copy', function () {
   var paths = [
+    { src: './admin/views/**/*', dest: './public/admin/views' },
+    { src: './admin/vendor/**/*', dest: './public/admin/vendor' },
+    { src: './admin/custom/css/**/*', dest: './public/admin/custom/css' },
+    { src: './admin/custom/img/**/*', dest: './public/admin/custom/img' },
+    { src: './admin/index.html', dest: './public/admin/' },
     { src: './app/views/**/*', dest: './public/views' },
     { src: './app/vendor/**/*', dest: './public/vendor' },
     { src: './app/custom/css/**/*', dest: './public/custom/css' },
@@ -37,23 +42,39 @@ gulp.task('copy', function () {
 });
 
 // Combinar y comprimir controllers
-gulp.task('bundle', function() {
-  return gulp.src('./bundle.config.js')
+gulp.task('bundle-app', function() {
+  return gulp.src('./bundle-app.config.js')
     .pipe(ngAnnotate())
     .pipe(bundle())
     .pipe(gulp.dest('./public'));
 });
 
+gulp.task('bundle-admin', function() {
+  return gulp.src('./bundle-admin.config.js')
+    .pipe(ngAnnotate())
+    .pipe(bundle())
+    .pipe(gulp.dest('./public/admin'));
+});
+
+
 // Cambiar el nombre del archivo de controllers (porque genera con nombres diferentes con hash)
-gulp.task('rename',function(){
+gulp.task('rename-app',function(){
   return gulp.src("./public/main-*")
   .pipe(rename("main.js"))
   //.pipe(del('./public/main-*',{force:true})) // Esto da error, habria que poner el tarea aparte
   .pipe(gulp.dest("./public")); 
 });
 
+gulp.task('rename-admin',function(){
+  return gulp.src("./public/admin/main-*")
+  .pipe(rename("main.js"))
+  //.pipe(del('./public/main-*',{force:true})) // Esto da error, habria que poner el tarea aparte
+  .pipe(gulp.dest("./public/admin")); 
+});
+
+
 // Reemplazar dependencias que se importan en el index.html y alternar version de test por produccion
-gulp.task('replace', function(){
+gulp.task('replace-app', function(){
   gulp.src(['./public/index.html'])
     .pipe(replace('<script type="text/javascript" src="custom/js/middleware.js"></script>', '<script type="text/javascript" src="main.js?v=1"></script>'))
     .pipe(replace('<script type="text/javascript" src="custom/js/middleware-db.js"></script>', ''))
@@ -62,4 +83,17 @@ gulp.task('replace', function(){
 	  .pipe(replace('<script type="text/javascript" src="controllers/home.js"></script>', ''))
 	  .pipe(replace('<script type="text/javascript" src="controllers/autotest.js"></script>', ''))
     .pipe(gulp.dest('./public'));
+});
+
+gulp.task('replace-admin', function(){
+  gulp.src(['./public/admin/index.html'])
+    .pipe(replace('<script type="text/javascript" src="custom/js/middleware.js"></script>', '<script type="text/javascript" src="main.js?v=1"></script>'))
+    .pipe(replace('<script type="text/javascript" src="custom/js/middleware-users.js"></script>', ''))
+    .pipe(replace('<script type="text/javascript" src="custom/js/middleware-db.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="custom/js/middleware-firestore.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="custom/js/init.js"></script>', ''))
+	  .pipe(replace('<script type="text/javascript" src="controllers/login.js"></script>', ''))
+    .pipe(replace('<script type="text/javascript" src="controllers/dashboard.js"></script>', ''))
+    .pipe(replace('<script type="text/javascript" src="controllers/config.js"></script>', ''))
+    .pipe(gulp.dest('./public/admin'));
 });

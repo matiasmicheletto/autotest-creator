@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-10 text-left">
+            <h3>Monitor de resultados</h3>
+        </div>
+        <div class="col-2 text-right">
+            <a title="Actualizar datos" class="btn btn-light"><i class="material-icons" ng-click="updateStats()">cached</i></a>
+        </div>
+        
+    </div>
+    
+    <div class="row" style="margin-top:20px">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header border-bottom">
+                    <h5>Distribución de edades <a ng-click="showHelp('ages-plot')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                </div>  
+                <div class="card-body">
+                    <canvas id="age-chart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px">
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-header border-bottom">
+                    <h5>Género <a ng-click="showHelp('genders-plot')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                </div>  
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="gender-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-header border-bottom">
+                    <h5>Resultados <a ng-click="showHelp('exitCodes-plot')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                </div>  
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="exitCode-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px; margin-bottom: 20px;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header border-bottom">
+                    <h5>Recorridos por árbol de decisiones <a ng-click="showHelp('paths-plot')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                </div>  
+                <div class="card-body">
+                    <div id="paths-container" style="height:500px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
