@@ -51,6 +51,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     $scope.updateLocationFilter = function(){ // Callback para configurar nueva ubicacion
         $scope.tempConfig.locationFilter = angular.copy($scope.newLocation);
         setupMap();
+        toastr.success("Espacio de operación actualizado");
         $("#location-modal").modal("hide");
     };
 
@@ -64,10 +65,11 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         var edges = [];
 
         for (var k in tree) { // Crear cada nodo del arbol
+            var nodeTitle = tree[k].header.substring(0, 15)+"-\n"+tree[k].header.substring(15, 30)+"-\n"+tree[k].header.substring(30, 50);
             nodes.push({
                 id: k,
                 value: 1,
-                label: "["+k+"] -- "+tree[k].header.substring(0,50)+"...",
+                label: "["+k+"] -- "+ $rootScope.html2Text(nodeTitle)+"...",
                 shape:"box",
                 font: { 
                     size: 12, 
@@ -79,10 +81,14 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             for (var j in tree[k].options) { // Crear cada enlace
                 if (tree[k].options[j].goto)
                     edges.push({
+                        //id: k * tree.length + j,
                         from: k,
                         to: tree[k].options[j].goto,
-                        //value: 1,
-                        label: tree[k].options[j].text.substring(0,10)
+                        smooth: {
+                            type: 'curvedCW',
+                            roundness: Math.random() - 0.5
+                        },
+                        label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + (tree[k].options[j].text.length > 10 ? "..." : "")
                     });
             }
         }
@@ -98,14 +104,10 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                   sortMethod: "directed"
                 }
             },
-            physics: {
-                hierarchicalRepulsion: {
-                    avoidOverlap: 1
-                }
-            },
+            physics: false,
             edges: {
                 font: {
-                    size: 6,
+                    size: 10,
                     color: "black",
                     face: "arial",
                     align: 'top'
@@ -113,27 +115,27 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                 arrows: {
                     to: {
                         enabled: true,
-                        scaleFactor: 1,
-                        type: "arrow"
+                        scaleFactor: 1
                     }
-                },
-                smooth: {
-                    type: "curvedCW"
                 }
             },
             nodes: {
-                shape: 'box',
-                margin: 10,
-                widthConstraint: {
-                    maximum: 200
-                }
-            },
-            physics: {
-                enabled: false
+                shape: 'box'
             }
         };
         // Hacer destroy para actualizar?
         var network = new vis.Network(document.getElementById('tree-container'), data, options);
+    };
+
+    $scope.newTree = function(){
+        toastr.info("Pronto estará disponible esta funcionalidad");
+        var newTree = {
+            author: firebase.auth().currentUser.email,
+            id: "T00"+($scope.tempConfig.trees.length+1),
+            timestamp: Date.now(),
+            tree: []
+        };
+        $scope.tempConfig.trees.push(newTree);
     };
 
     $scope.saveConfig = function(){

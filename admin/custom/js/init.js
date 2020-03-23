@@ -61,7 +61,8 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
         // Utils
         $rootScope.getTime = function(stamp, format){ // Para ejecutar moment en view
             var time;
-            if(!format) format = 1;
+            if(!format) format = 3;
+            if(!stamp) format = 1;
             switch(format){
                 case 0: // Estampa de tiempo en view
                     time = Date.now();
@@ -88,6 +89,12 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                     time = null;
             }
             return time;
+        };
+
+        $rootScope.html2Text = function(content){
+            var temp = document.createElement("div");
+            temp.innerHTML = content;
+            return temp.textContent || temp.innerText || "";
         };
     }])
     .config(["$routeProvider", function ($routeProvider) {

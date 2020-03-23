@@ -76,8 +76,93 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
         });
     };
 
-    
-    $scope.updateStats = function(){ // Las stats se descargan al acceder a este controller por unica vez durante el uso de la app
+    var updatePathsPlot = function () { // Grafico de sankey de interacciones de usuarios
+
+        // Determinar modelo activo
+        var treeData = $rootScope.config.trees.find(function (el) {
+            return el.active
+        });
+        var tree = treeData.tree;
+
+        //console.log($rootScope.pathStats[treeData.id]);
+        var weights = {};
+        for (var k in $rootScope.pathStats[treeData.id]) {
+            if (!weights[k.split('_')[1]])
+                weights[k.split('_')[1]] = {};
+            weights[k.split('_')[1]][k.split('_')[2]] = $rootScope.pathStats[treeData.id][k]
+        }
+        console.log(weights);
+
+        var nodes = [];
+        var edges = [];
+
+        for (var k in tree) { // Crear cada nodo del arbol
+            var nodeTitle = tree[k].header.substring(0, 15)+"-\n"+tree[k].header.substring(15, 30)+"-\n"+tree[k].header.substring(30, 50);
+            nodes.push({
+                id: k,
+                value: 1,
+                label: "[" + k + "] -- " + $rootScope.html2Text(nodeTitle) + "...",
+                shape: "box",
+                font: {
+                    size: 12,
+                    color: "white",
+                    face: "arial"
+                },
+                color: "#444444"
+            });
+            for (var j in tree[k].options) { // Crear cada enlace
+                if (tree[k].options[j].goto != -1 && tree[k].options[j].goto != undefined) {
+                    edges.push({
+                        from: k,
+                        to: tree[k].options[j].goto,
+                        smooth: {
+                            type: 'curvedCW',
+                            roundness: Math.random() - 0.5
+                        },
+                        value: weights[k][tree[k].options[j].goto] || 1,
+                        label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
+                            (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + weights[k][tree[k].options[j].goto] + ")"
+                    });
+                }
+            }
+        }
+        var data = {
+            nodes: new vis.DataSet(nodes),
+            edges: new vis.DataSet(edges)
+        };
+        console.log(data);
+        var options = {
+            layout: {
+                hierarchical: {
+                    direction: "UD",
+                    sortMethod: "directed"
+                }
+            },
+            physics:false,
+            edges: {
+                font: {
+                    size: 10,
+                    color: "black",
+                    face: "arial",
+                    align: 'top'
+                },
+                arrows: {
+                    to: {
+                        enabled: true,
+                        scaleFactor: 1
+                    }
+                }
+            },
+            nodes: {
+                shape: 'box'
+            }
+        };
+
+        var network = new vis.Network(document.getElementById('paths-container'), data, options);
+    };
+
+
+    $scope.updateStats = function () { // Las stats se descargan al acceder a este controller por unica vez durante el uso de la app
         $rootScope.loading = true;
         middleware.fs.getCollection("stats")
             .then(function (snapshot) {
@@ -92,11 +177,12 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
 
                 middleware.fs.getCollection("pathStats")
                     .then(function (snapshot2) {
-
-                        $scope.pathStats = {};
+                        $rootScope.pathStats = {};
                         snapshot2.forEach(function (document) {
-                            $scope.pathStats[document.id] = document.data();
+                            $rootScope.pathStats[document.id] = document.data();
                         });
+
+                        updatePathsPlot();
 
                         $rootScope.loading = false;
                         $scope.$apply();
@@ -114,8 +200,13 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
             });
     };
 
-    /*
-    if(!$rootScope.stats) // Descargar la 1ra vez
+
+    if (!$rootScope.stats) // Descargar la 1ra vez
         $scope.updateStats();
-    */
+    else { // Sino, directamente actualizar graficos
+        updateAgePlot();
+        updaterResultPlot();
+        updateGenderPlot();
+        updatePathsPlot();
+    }
 }]);

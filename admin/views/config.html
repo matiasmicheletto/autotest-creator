@@ -1,15 +1,17 @@
 <div class="container">
-    
+
     <div class="row" style="margin-top: 10px;">
         <h3>Parámetros de configuración</h3>
-        <p>Configure los parámetros de funcionamiento de la aplicación y presione "Guardar" para que la configuración tome efecto o "Descartar" para reestablecer los cambios a los valores activos.</p>
+        <p>Configure los parámetros de funcionamiento de la aplicación y presione "Guardar" para que la configuración
+            tome efecto o "Descartar" para reestablecer los cambios a los valores activos.</p>
     </div>
-    
+
     <div class="row" style="margin-top:20px">
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
                     <h5>Espacio de operación</h5>
+                    <p>Para modificar el área de interés, pulse sobre el mapa.</p>
                 </div>
                 <div class="card-body">
                     <div id="map" style="height: 500px;"></div>
@@ -23,17 +25,19 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Límites de uso</h5>
+                    <h5>Límites de acceso</h5>
                 </div>
                 <div class="card-body">
                     <form class="row">
                         <div class="col-md-6 col-sm-12 form-group">
                             <label for="formGroupInput">Cantidad de resultados</label>
-                            <input type="number" class="form-control" id="formGroupInput" ng-model="tempConfig.logLimit.max">
+                            <input type="number" class="form-control" id="formGroupInput"
+                                ng-model="tempConfig.logLimit.max">
                         </div>
                         <div class="col-md-6 col-sm-12 form-group">
                             <label for="formGroupInput2">Tasa de actualización (horas)</label>
-                            <input type="number" class="form-control" id="formGroupInput2" ng-model="elapsedHours" ng-change="updateElapsed()">
+                            <input type="number" class="form-control" id="formGroupInput2" ng-model="elapsedHours"
+                                ng-change="updateElapsed()">
                         </div>
                     </form>
                 </div>
@@ -49,32 +53,39 @@
                     <h5>Historial de configuraciones</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table">
-                        <thead class="thead-dark">
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Nodos</th>
-                            <th scope="col">Creado por</th>
-                            <th scope="col">Creación</th>
-                            <th scope="col">Activo</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr ng-repeat = "(key, treeData) in tempConfig.trees track by $index">
-                            <th scope="row">1</th>
-                            <td data-title="ID de árbol">{{treeData.id}}</td>
-                            <td data-title="Cantidad de nodos">{{treeData.tree.length}}</td>
-                            <td data-title="Autor">{{treeData.author}}</td>
-                            <td data-title="Fecha y hora">{{getTime(treeData.timestamp)}}</td>
-                            <td>
-                                <a ng-click="selectTree(key)" title="Seleccionar" class="btn btn-sm btn-light">
-                                    <i class="material-icons pmd-sm">{{treeData.active ? 'check_box' : 'check_box_outline_blank'}}</i>
-                                </a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <div class="row">
+                        <table class="table table-responsive-sm">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Nodos</th>
+                                    <th scope="col">Creado por</th>
+                                    <th scope="col">Creación</th>
+                                    <th scope="col">Activo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="(key, treeData) in tempConfig.trees track by $index">
+                                    <th scope="row">{{$index+1}}</th>
+                                    <td data-title="ID de árbol">{{treeData.id}}</td>
+                                    <td data-title="Cantidad de nodos">{{treeData.tree.length}}</td>
+                                    <td data-title="Autor">{{treeData.author}}</td>
+                                    <td data-title="Fecha y hora">{{getTime(treeData.timestamp)}}</td>
+                                    <td>
+                                        <a ng-click="selectTree(key)" title="Seleccionar" class="btn btn-sm btn-light">
+                                            <i
+                                                class="material-icons pmd-sm">{{treeData.active ? 'check_box' : 'check_box_outline_blank'}}</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row float-right">
+                        <button type="button" title="Crear nuevo arbol de decisiones" class="btn btn-dark"
+                            ng-click="newTree()"><i class="material-icons pmd-sm">add</i></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,7 +96,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Previsualización del árbol</h5>
+                    <h5>Modelo de árbol actual</h5>
                 </div>
                 <div class="card-body">
                     <div id="tree-container" style="height:500px"></div>
@@ -95,8 +106,10 @@
     </div>
 
     <div class="row float-right" style="margin-top:20px; margin-bottom: 20px;">
-        <button type="button" class="btn btn-secondary" title="Deshacer cambios" ng-click="resetConfig()">Restablecer</button>
-        <button type="button" class="btn btn-dark" title="Guardar cambios" ng-click="saveConfig()" style="margin-left:10px">Guardar</button>
+        <button type="button" class="btn btn-secondary" title="Deshacer cambios"
+            ng-click="resetConfig()">Restablecer</button>
+        <button type="button" class="btn btn-dark" title="Guardar cambios" ng-click="saveConfig()"
+            style="margin-left:10px">Guardar</button>
     </div>
 </div>
 
@@ -105,7 +118,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>Configurar nuevo espacio de operación</h4> 
+                <h4>Configurar nuevo espacio de operación</h4>
             </div>
             <div class="modal-body">
                 <div>
@@ -114,17 +127,18 @@
                     <p><b>Latitud: </b>{{newLocation.lat}}</p>
                     <p><b>Longitud: </b>{{newLocation.lng}}</p>
                 </div>
-                
+
                 <div class="form-group row">
                     <label for="rangeInput" class="col-sm-4 col-form-label">Radio del área (kilómetros):</label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" id="rangeInput" ng-model="newLocation.range" style="max-width: 300px;">
+                        <input type="number" class="form-control" id="rangeInput" ng-model="newLocation.range"
+                            style="max-width: 300px;">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-dark" ng-click="updateLocationFilter()">Aceptar</button>                
+                <button type="button" class="btn btn-dark" ng-click="updateLocationFilter()">Aceptar</button>
             </div>
         </div>
     </div>
