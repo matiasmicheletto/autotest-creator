@@ -19,7 +19,6 @@ window.middleware = (function () {
         return new Promise(function (fulfill, reject) {
             try {
                 firebase.initializeApp(firebaseConfig);
-                firebase.analytics();
 
                 firebase.auth().onAuthStateChanged(function (user) { // Escuchar cambios de logeo de usuario
                     if (user) // El usuario esta logeado

@@ -20,7 +20,7 @@ window.middleware = (function () {
         return new Promise(function (fulfill, reject) {
             try {
                 firebase.initializeApp(firebaseConfig);
-                firebase.analytics();
+                //firebase.analytics();
 
                 // Descarga de parametros de configuracion
                 // Se intenta descargar la configuracion de firebase (se usa un cache local por una hora)

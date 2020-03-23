@@ -9,10 +9,26 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
         $location.path('/login');
 
         middleware.users.onUserSignedIn = function(uid){ // Callback usuario logeado
-            $rootScope.userLogged = true;
-            $rootScope.loading = false;
-            $location.path('/');
-            $rootScope.$apply();
+            // Descargar configuracion actual
+            middleware.db.getSorted("decisionTrees", "timestamp")
+            .then(function(snapshot){
+                $rootScope.config = {
+                    trees: []
+                };
+                snapshot.forEach(function(tree){
+                    var t = tree.val();
+                    t.key = tree.key;
+                    $rootScope.config.trees.push(t);
+                });
+                // Ir al tablero
+                $rootScope.userLogged = true;
+                $rootScope.loading = false;
+                $location.path('/');
+                $rootScope.$apply();
+            })
+            .catch(function(err){
+                console.log(err);
+            });
         };
 
         middleware.users.onUserSignedOut = function(){ // Callback usuario deslogeado

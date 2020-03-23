@@ -8,7 +8,7 @@ En este proyecto se intenta implementar:
 ## Diagrama de flujo de la aplicación
 ![Proceso](doc/app_process.png "Proceso") 
 
-## Formato objeto de configuracion
+## Formato objeto de configuración
 ```json
 {
 	"locationFilter":{
@@ -23,7 +23,7 @@ En este proyecto se intenta implementar:
 }
 ```
 
-## Formato arbol de decision autotest
+## Formato árbol de decisión autotest
 ```json
 {
 	"author": "admin@email.com",
@@ -134,11 +134,11 @@ service cloud.firestore {
            request.resource.data.timestamp is number;
     }
     match /stats/{document=**} {
-      allow read: if false;
+      allow read: if request.auth.uid != null;
       allow update: if true;
     }
     match /pathStats/{document=**} {
-      allow read: if false;
+      allow read: if request.auth.uid != null;
       allow update: if true;
     }
   }
