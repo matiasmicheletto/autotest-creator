@@ -1,9 +1,31 @@
 var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
-    .run(["$rootScope", function ($rootScope) {
+    .run(["$rootScope","$location", function ($rootScope,$location) {
 
-        console.log("init");
-        $rootScope.userLogged = true; // TODO: quitar
+        $rootScope.userLogged = false;
+        $rootScope.loading = true;
 
+        middleware.init();
+
+        $location.path('/login');
+
+        middleware.users.onUserSignedIn = function(uid){ // Callback usuario logeado
+            $rootScope.userLogged = true;
+            $rootScope.loading = false;
+            $location.path('/');
+            $rootScope.$apply();
+        };
+
+        middleware.users.onUserSignedOut = function(){ // Callback usuario deslogeado
+            $rootScope.userLogged = false;
+            $rootScope.loading = false;
+            $location.path('/login');
+            $rootScope.$apply();
+        };
+
+        $rootScope.logout = function(){
+            $rootScope.loading = true;
+            middleware.users.signOut();
+        };
     }])
     .config(["$routeProvider", function ($routeProvider) {
         $routeProvider

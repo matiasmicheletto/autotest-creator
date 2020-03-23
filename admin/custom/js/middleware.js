@@ -14,13 +14,19 @@ window.middleware = (function () {
     var DEBUG = true; // Version debugging
 
     var public = {}; // Metodos y atributos publicos
-    var private = {}; // Metodos y atributos privados
 
     public.init = function () { // Inicializacion del middleware. Descarga de configuracion
         return new Promise(function (fulfill, reject) {
             try {
                 firebase.initializeApp(firebaseConfig);
                 firebase.analytics();
+
+                firebase.auth().onAuthStateChanged(function (user) { // Escuchar cambios de logeo de usuario
+                    if (user) // El usuario esta logeado
+                        public.users.onUserSignedIn(user.uid); // Pasar uid a los callbacks
+                    else // Si cerro sesión, se llama al callback
+                        public.users.onUserSignedOut();
+                });
 
                 return fulfill();
             } catch (e) {
