@@ -127,19 +127,35 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         var network = new vis.Network(document.getElementById('tree-container'), data, options);
     };
 
-    $scope.newTree = function(){
-        toastr.info("Pronto estará disponible esta funcionalidad");
+    $scope.newTree = function(){ // Crear un nuevo arbol vacio
+        toastr.success("Nuevo arbol creado");
         var newTree = {
             author: firebase.auth().currentUser.email,
             id: "T00"+($scope.tempConfig.trees.length+1),
             timestamp: Date.now(),
+            editable: true, // Antes de cargarse a la db, puede ser editado
             tree: []
         };
         $scope.tempConfig.trees.push(newTree);
     };
 
+    $scope.setActiveTree = function(index){ // Configurar arbol de la lista como activo
+        toastr.info("Aún no es posible modificar árboles activos");
+    };
+
+    $scope.editTree = function(index){ // Editar un arbol recientemente creado
+        $scope.editingTree = angular.copy($scope.tempConfig.trees[index]);
+        console.log($scope.editingTree);
+        $("#tree-edit-modal").modal("show");
+    };
+
     $scope.saveConfig = function(){
+        toastr.info("Aún no es posible cargar la configuración actual a la base de datos.");
+
         $rootScope.config = angular.copy($scope.tempConfig); // Temporal durante la sesion
+        // Deshabilitar edicion de todos los arboles
+        for(var k in $rootScope.config.trees)
+            delete $rootScope.config.trees.editable;
 
         // TODO: cargar a firebase
         console.log("Actualizar config");

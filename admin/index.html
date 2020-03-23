@@ -60,6 +60,21 @@
   
 	<!-- ##################### VIEWS ##################### -->
 	<ng-view></ng-view>
+
+	<!-- ##################### AYUDA ##################### -->
+	<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4>Ayuda</h4>
+				</div>
+				<div class="modal-body" ng-bind-html="helpContent"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 	<!-- VENDOR ASSETS -->
 	<script type="text/javascript" src="vendor/js/firebase-app.js"></script>

@@ -86,10 +86,13 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
 
         //console.log($rootScope.pathStats[treeData.id]);
         var weights = {};
+        var maxWeight = 0; // Para normalizar los valores
         for (var k in $rootScope.pathStats[treeData.id]) {
             if (!weights[k.split('_')[1]])
                 weights[k.split('_')[1]] = {};
-            weights[k.split('_')[1]][k.split('_')[2]] = $rootScope.pathStats[treeData.id][k]
+            weights[k.split('_')[1]][k.split('_')[2]] = $rootScope.pathStats[treeData.id][k];
+            if($rootScope.pathStats[treeData.id][k] > maxWeight)
+                maxWeight = $rootScope.pathStats[treeData.id][k];
         }
         console.log(weights);
 
@@ -119,7 +122,7 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                             type: 'curvedCW',
                             roundness: Math.random() - 0.5
                         },
-                        value: weights[k][tree[k].options[j].goto] || 1,
+                        value: Math.round(weights[k][tree[k].options[j].goto]/maxWeight*10) || 1,
                         label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
                             (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + weights[k][tree[k].options[j].goto] + ")"
                     });

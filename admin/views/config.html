@@ -1,17 +1,14 @@
 <div class="container">
 
     <div class="row" style="margin-top: 10px;">
-        <h3>Parámetros de configuración</h3>
-        <p>Configure los parámetros de funcionamiento de la aplicación y presione "Guardar" para que la configuración
-            tome efecto o "Descartar" para reestablecer los cambios a los valores activos.</p>
+        <h3>Parámetros de configuración <a ng-click="showHelp('main-config')" style="cursor: pointer;"><i class="material-icons">help</i></a></h3>
     </div>
 
     <div class="row" style="margin-top:20px">
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Espacio de operación</h5>
-                    <p>Para modificar el área de interés, pulse sobre el mapa.</p>
+                    <h5>Espacio de operación <a ng-click="showHelp('map')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
                 </div>
                 <div class="card-body">
                     <div id="map" style="height: 500px;"></div>
@@ -25,7 +22,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Límites de acceso</h5>
+                    <h5>Límites de acceso <a ng-click="showHelp('log-limit')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
                 </div>
                 <div class="card-body">
                     <form class="row">
@@ -50,7 +47,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Historial de configuraciones</h5>
+                    <h5>Historial de configuraciones <a ng-click="showHelp('tree-list')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -73,9 +70,11 @@
                                     <td data-title="Autor">{{treeData.author}}</td>
                                     <td data-title="Fecha y hora">{{getTime(treeData.timestamp)}}</td>
                                     <td>
-                                        <a ng-click="selectTree(key)" title="Seleccionar" class="btn btn-sm btn-light">
-                                            <i
-                                                class="material-icons pmd-sm">{{treeData.active ? 'check_box' : 'check_box_outline_blank'}}</i>
+                                        <a ng-click="setActiveTree(key)" title="Seleccionar como activo" class="btn btn-sm btn-light">
+                                            <i class="material-icons pmd-sm">{{treeData.active ? 'check_box' : 'check_box_outline_blank'}}</i>
+                                        </a>
+                                        <a ng-if="treeData.editable" ng-click="editTree(key)" title="Editar" class="btn btn-sm btn-light">
+                                            <i class="material-icons pmd-sm">edit</i>
                                         </a>
                                     </td>
                                 </tr>
@@ -96,7 +95,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Modelo de árbol actual</h5>
+                    <h5>Modelo de árbol actual <a ng-click="showHelp('tree-container')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
                 </div>
                 <div class="card-body">
                     <div id="tree-container" style="height:500px"></div>
@@ -139,6 +138,22 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-dark" ng-click="updateLocationFilter()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tree-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Editar arbol de decisión</h4>
+            </div>
+            <div class="modal-body">
+                <p><i>--Sección en desarrollo--</i></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
             </div>
         </div>
     </div>
