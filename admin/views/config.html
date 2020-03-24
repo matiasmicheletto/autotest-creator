@@ -2,7 +2,7 @@
 
     <div class="row" style="margin-top: 10px;">
         <h3>
-            Parámetros de configuración 
+            Parámetros de configuración
             <sup>
                 <a ng-click="showHelp('main-config')" style="cursor: pointer;font-size: small;">
                     <i class="material-icons">help</i>
@@ -15,7 +15,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Espacio de operación <sup><a ng-click="showHelp('map')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
+                    <h5>Espacio de operación <sup><a ng-click="showHelp('map')"
+                                style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div id="map" style="height: 500px;"></div>
@@ -29,7 +31,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Límites de acceso <sup><a ng-click="showHelp('log-limit')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
+                    <h5>Límites de acceso <sup><a ng-click="showHelp('log-limit')"
+                                style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <form class="row">
@@ -54,7 +58,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Historial de configuraciones <sup><a ng-click="showHelp('tree-list')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
+                    <h5>Historial de configuraciones <sup><a ng-click="showHelp('tree-list')"
+                                style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -77,13 +83,15 @@
                                     <td data-title="Autor">{{treeData.author}}</td>
                                     <td data-title="Fecha y hora">{{getTime(treeData.timestamp)}}</td>
                                     <td>
-                                        <a ng-if="!treeData.active" ng-click="setActiveTree(key)" title="Activar" class="btn btn-sm btn-light">
+                                        <a ng-if="!treeData.active" ng-click="setActiveTree(key)" title="Activar"
+                                            class="btn btn-sm btn-light">
                                             <i class="material-icons pmd-sm">check_box_outline_blank</i>
                                         </a>
-                                        <a  ng-if="treeData.active" title="Activo" class="btn btn-sm btn-light">
+                                        <a ng-if="treeData.active" title="Activo" class="btn btn-sm btn-light">
                                             <i class="material-icons pmd-sm">check_box</i>
                                         </a>
-                                        <a ng-if="treeData.editable" ng-click="editTree(key)" title="Editar" class="btn btn-sm btn-light">
+                                        <a ng-if="treeData.editable" ng-click="editTree(key)" title="Editar"
+                                            class="btn btn-sm btn-light">
                                             <i class="material-icons pmd-sm">edit</i>
                                         </a>
                                     </td>
@@ -105,7 +113,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Modelo de árbol actual <sup><a ng-click="showHelp('tree-container')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
+                    <h5>Modelo de árbol actual <sup><a ng-click="showHelp('tree-container')"
+                                style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div id="tree-container" style="height:500px"></div>
@@ -117,8 +127,8 @@
     <div class="row float-right" style="margin-top:20px; margin-bottom: 20px;">
         <button type="button" class="btn btn-secondary" title="Deshacer cambios"
             ng-click="resetConfig()">Restablecer</button>
-        <button type="button" class="btn btn-dark" title="Guardar cambios" data-toggle="modal" data-target="#confirm-modal"
-            style="margin-left:10px">Guardar</button>
+        <button type="button" class="btn btn-dark" title="Guardar cambios" data-toggle="modal"
+            data-target="#confirm-modal" style="margin-left:10px">Guardar</button>
     </div>
 </div>
 
@@ -153,22 +163,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="tree-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Editar arbol de decisión</h4>
-            </div>
-            <div class="modal-body">
-                <p><i>--Sección en desarrollo--</i></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -176,12 +170,120 @@
                 <h4>Confirme la operación</h4>
             </div>
             <div class="modal-body">
-                <p>La configuración que se muestra en esta pantalla se tornará activa y los cambios tendrán efecto inmediato en todo el sistema.</p>
+                <p>La configuración que se muestra en esta pantalla se tornará activa y los cambios tendrán efecto
+                    inmediato en todo el sistema.</p>
                 <p>¿Desea continuar?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-dark" ng-click="saveConfig()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tree-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:85%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Editar arbol de decisión</h4>
+            </div>
+            <div class="modal-body">
+
+                <!--Lista de tarjetas, una por nodo-->
+
+                <div class="row" style="margin-bottom:20px"
+                    ng-repeat="(key, node) in tempConfig.trees[editingIndex].tree track by $index">
+                    <div class="col-12">
+                        <div class="card" style="border:1px solid black">
+                            <div class="card-header border-bottom">
+                                <div class="row">
+                                    <!--Encabezado: nro de nodo y boton para borrar-->
+                                    <div class="col-10 text-left">
+                                        <h3>Nodo {{key}}</h3>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <a title="Eliminar nodo" class="btn btn-light">
+                                            <i class="material-icons"
+                                                ng-click="tempConfig.trees[editingIndex].tree.splice(key,1)">delete</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                <!-- Titulo y contenido del menu -->
+                                <div class="row form-group">
+                                    <label for="nodeHeader{{$index}}">Título</label>
+                                    <input type="text" class="form-control" id="nodeHeader{{$index}}"
+                                        ng-model="tempConfig.trees[editingIndex].tree[key].header">
+                                </div>
+                                <div class="row form-group">
+                                    <label for="nodeContent{{$index}}">Contenido</label>
+                                    <input type="text" class="form-control" id="nodeContent{{$index}}"
+                                        ng-model="tempConfig.trees[editingIndex].tree[key].content">
+                                </div>
+
+                                <!-- Lista de opciones -->
+                                <div class="row">
+                                    <h5>Opciones del menú</h5>
+                                    <table class="table table-responsive-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Texto</th>
+                                                <th scope="col">Tipo</th>
+                                                <th scope="col">Enlace</th>
+                                                <th scope="col">Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="(key2, option) in tempConfig.trees[editingIndex].tree[key].options track by $index">
+                                                <th scope="row">{{$index+1}}</th>
+                                                <td data-title="Texto">
+                                                    <input class="form-control form-control-sm" type="text" placeholder="Texto de la opción" ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].text">
+                                                </td>
+                                                <td data-title="Tipo">
+                                                    <select class="form-control form-control-sm" ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].type">
+                                                        <option value="goto" ng-selected="true">Enlace a nodo</option>
+                                                        <option value="link">Enlace externo</option>
+                                                        <option value="exit">Finalizar test</option>
+                                                    </select>
+                                                </td>
+                                                <td data-title="Enlace">
+                                                    <input ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='link'" class="form-control form-control-sm" type="text" placeholder="Link" ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].href">
+                                                    <input ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='goto'" class="form-control form-control-sm" type="number" placeholder="Ir a" ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].goto">
+                                                    <input ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='exit'" class="form-control form-control-sm" type="text" placeholder="Código res." ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].exitCode">
+                                                </td>
+                                                <td data-title="Eliminar">
+                                                    <a ng-click="tempConfig.trees[editingIndex].tree[key].options.splice(key2,1)" 
+                                                        class="btn btn-sm btn-light">
+                                                        <i class="material-icons pmd-sm">delete</i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row float-right">
+                                    <button type="button" title="Agregar opción" class="btn btn-light btn-sm"
+                                        ng-click="tempConfig.trees[editingIndex].tree[key].options.push({text:'', goto:key2})"><i class="material-icons pmd-sm">add_circle_outline</i></button>
+                                </div>
+
+                            </div>
+                            <!--Fin card-body -->
+                        </div>
+                    </div>
+                </div>
+
+                <!--Fin card-->
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    ng-click="tempConfig.trees[editingIndex].tree.push({header:'', content:'', options:[]})">Nuevo
+                    nodo</button>
+                <button type="button" class="btn btn-dark" ng-click="validateTree()">Terminar</button>
             </div>
         </div>
     </div>

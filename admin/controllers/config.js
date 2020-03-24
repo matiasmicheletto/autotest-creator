@@ -5,10 +5,12 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     }
     
     // Iniciar mapa leaflet
-    $scope.map = L.map('map').fitWorld();
+    $scope.map = L.map('map',{
+        center: [$rootScope.config.locationFilter.lat, $rootScope.config.locationFilter.lng],
+        zoom: 8,
+    });
     
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        maxZoom: 18,
         id: 'mapbox/streets-v11',
         accessToken: 'pk.eyJ1IjoibWF0aWFzbWljaGVsZXR0byIsImEiOiJjazVsa2ZtamowZHJnM2ttaXFmZGo1MDhtIn0.8iBO-J1wj34LIqq-e4Me5w'
     }).addTo($scope.map);
@@ -21,16 +23,18 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         $("#location-modal").modal("show");
     });
 
+    /*
     $scope.map.on('locationfound', function (e) { // Callback de posicion GPS actualizada
         console.log(e);
-        console.log($scope.tempConfig);
     });
+    
 
     // Mostrar ubicación actual
     $scope.map.locate({
         setView: true, // Forzar vista
-        maxZoom: 16 // Zomm
+        maxZoom: 16 // Zoom
     });
+    */
 
     var setupMap = function(){  // Dibujar area de operacion
         var current_location = { // Crear marcador
@@ -163,7 +167,11 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             id: "T00"+($scope.tempConfig.trees.length+1),
             timestamp: Date.now(),
             editable: true, // Antes de cargarse a la db, puede ser editado
-            tree: []
+            tree: [{ // Crearlo con un solo nodo
+                header:"",
+                content:"",
+                options:[] // Sin opciones
+            }]
         };
         $scope.tempConfig.trees.push(newTree);
     };
@@ -179,9 +187,18 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     };
 
     $scope.editTree = function(index){ // Editar un arbol recientemente creado
-        $scope.editingTree = angular.copy($scope.tempConfig.trees[index]);
-        console.log($scope.editingTree);
+        $scope.editingIndex = index; // Tomar indice para mostrar arbol en la vista
         $("#tree-edit-modal").modal("show");
+    };
+
+    $scope.validateTree = function(){ // Verifica el arbol creado: busca lazos infinitos y reconfigura modelo
+
+        // Nodos con type = exit, agregar goto = -1
+
+        // Algoritmo de checkeo de lazo infinito.
+
+        // Si todo esta ok:
+        $("#tree-edit-modal").modal("hide");
     };
 
     $scope.saveConfig = function(){ // Cuando el admin confirma aplicar la configuracion actual a la base de datos, se sobre escribe toda la configuracion
