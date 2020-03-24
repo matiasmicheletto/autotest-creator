@@ -64,6 +64,8 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         var nodes = [];
         var edges = [];
 
+        var exitCodes = []; // Lista de codigos de salida para mostrar en el grafo
+
         for (var k in tree) { // Crear cada nodo del arbol
             var nodeTitle = tree[k].header.substring(0, 15)+"-\n"+tree[k].header.substring(15, 30)+"-\n"+tree[k].header.substring(30, 50);
             nodes.push({
@@ -79,9 +81,8 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                 color: "#444444"
             });
             for (var j in tree[k].options) { // Crear cada enlace
-                if (tree[k].options[j].goto)
+                if (tree[k].options[j].goto != -1){
                     edges.push({
-                        //id: k * tree.length + j,
                         from: k,
                         to: tree[k].options[j].goto,
                         smooth: {
@@ -90,6 +91,34 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                         },
                         label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + (tree[k].options[j].text.length > 10 ? "..." : "")
                     });
+                }else{
+                    if(tree[k].options[j].exitCode){
+                        if(!exitCodes.includes(tree[k].options[j].exitCode)){
+                            exitCodes.push(tree[k].options[j].exitCode); // Agregar a la lista
+                            nodes.push({ // Crear un nodo para mostrar el punto de finalizacion
+                                id: tree[k].options[j].exitCode,
+                                label: tree[k].options[j].exitCode || "S/C",
+                                shape: "circle",
+                                font: {
+                                    size: 12,
+                                    color: "white",
+                                    face: "arial"
+                                },
+                                color: "#AAAAAA"
+                            });
+                        }
+                        // Crear el enlace al nodo de salida
+                        edges.push({
+                            from: k,
+                            to: tree[k].options[j].exitCode,
+                            smooth: {
+                                type: 'curvedCW',
+                                roundness: Math.random() - 0.5
+                            },
+                            label: "Cód. de salida"
+                        });
+                    }
+                }
             }
         }
         var data = {
@@ -140,7 +169,13 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     };
 
     $scope.setActiveTree = function(index){ // Configurar arbol de la lista como activo
-        toastr.info("Aún no es posible modificar árboles activos");
+        for(var k in $scope.tempConfig.trees){
+            if(k == index)
+                $scope.tempConfig.trees[k].active = true;
+            else
+                $scope.tempConfig.trees[k].active = false;
+        }
+        updateTreePlot();
     };
 
     $scope.editTree = function(index){ // Editar un arbol recientemente creado
@@ -149,13 +184,14 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         $("#tree-edit-modal").modal("show");
     };
 
-    $scope.saveConfig = function(){
-        toastr.info("Aún no es posible cargar la configuración actual a la base de datos.");
+    $scope.saveConfig = function(){ // Cuando el admin confirma aplicar la configuracion actual a la base de datos, se sobre escribe toda la configuracion
 
-        $rootScope.config = angular.copy($scope.tempConfig); // Temporal durante la sesion
         // Deshabilitar edicion de todos los arboles
-        for(var k in $rootScope.config.trees)
-            delete $rootScope.config.trees.editable;
+        for(var k in $scope.tempConfig.trees){
+            delete $scope.tempConfig.trees[k].editable;
+        }
+        $rootScope.config = angular.copy($scope.tempConfig);
+        $("#confirm-modal").modal("hide");
 
         // TODO: cargar a firebase
         console.log("Actualizar config");

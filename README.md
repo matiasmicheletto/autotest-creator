@@ -151,12 +151,12 @@ service cloud.firestore {
   "rules": {
     "config":{
       ".read": true,
-      ".write": "auth != null"
+      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'"
     },
     "decisionTrees":{
       ".read": true,
-      ".write": "auth != null",
-      ".indexOn": "timestamp"
+      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
+      ".indexOn": ["active","timestamp"]
     }
   }
 }

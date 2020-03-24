@@ -1,14 +1,21 @@
 <div class="container">
 
     <div class="row" style="margin-top: 10px;">
-        <h3>Parámetros de configuración <a ng-click="showHelp('main-config')" style="cursor: pointer;"><i class="material-icons">help</i></a></h3>
+        <h3>
+            Parámetros de configuración 
+            <sup>
+                <a ng-click="showHelp('main-config')" style="cursor: pointer;font-size: small;">
+                    <i class="material-icons">help</i>
+                </a>
+            </sup>
+        </h3>
     </div>
 
     <div class="row" style="margin-top:20px">
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Espacio de operación <a ng-click="showHelp('map')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                    <h5>Espacio de operación <sup><a ng-click="showHelp('map')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
                 </div>
                 <div class="card-body">
                     <div id="map" style="height: 500px;"></div>
@@ -22,7 +29,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Límites de acceso <a ng-click="showHelp('log-limit')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                    <h5>Límites de acceso <sup><a ng-click="showHelp('log-limit')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
                 </div>
                 <div class="card-body">
                     <form class="row">
@@ -47,7 +54,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Historial de configuraciones <a ng-click="showHelp('tree-list')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                    <h5>Historial de configuraciones <sup><a ng-click="showHelp('tree-list')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -70,8 +77,11 @@
                                     <td data-title="Autor">{{treeData.author}}</td>
                                     <td data-title="Fecha y hora">{{getTime(treeData.timestamp)}}</td>
                                     <td>
-                                        <a ng-click="setActiveTree(key)" title="Seleccionar como activo" class="btn btn-sm btn-light">
-                                            <i class="material-icons pmd-sm">{{treeData.active ? 'check_box' : 'check_box_outline_blank'}}</i>
+                                        <a ng-if="!treeData.active" ng-click="setActiveTree(key)" title="Activar" class="btn btn-sm btn-light">
+                                            <i class="material-icons pmd-sm">check_box_outline_blank</i>
+                                        </a>
+                                        <a  ng-if="treeData.active" title="Activo" class="btn btn-sm btn-light">
+                                            <i class="material-icons pmd-sm">check_box</i>
                                         </a>
                                         <a ng-if="treeData.editable" ng-click="editTree(key)" title="Editar" class="btn btn-sm btn-light">
                                             <i class="material-icons pmd-sm">edit</i>
@@ -95,7 +105,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5>Modelo de árbol actual <a ng-click="showHelp('tree-container')" style="cursor: pointer;"><i class="material-icons">help</i></a></h5>
+                    <h5>Modelo de árbol actual <sup><a ng-click="showHelp('tree-container')" style="cursor: pointer;font-size: small;"><i class="material-icons">help</i></a></sup></h5>
                 </div>
                 <div class="card-body">
                     <div id="tree-container" style="height:500px"></div>
@@ -107,7 +117,7 @@
     <div class="row float-right" style="margin-top:20px; margin-bottom: 20px;">
         <button type="button" class="btn btn-secondary" title="Deshacer cambios"
             ng-click="resetConfig()">Restablecer</button>
-        <button type="button" class="btn btn-dark" title="Guardar cambios" ng-click="saveConfig()"
+        <button type="button" class="btn btn-dark" title="Guardar cambios" data-toggle="modal" data-target="#confirm-modal"
             style="margin-left:10px">Guardar</button>
     </div>
 </div>
@@ -154,6 +164,24 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Confirme la operación</h4>
+            </div>
+            <div class="modal-body">
+                <p>La configuración que se muestra en esta pantalla se tornará activa y los cambios tendrán efecto inmediato en todo el sistema.</p>
+                <p>¿Desea continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-dark" ng-click="saveConfig()">Aceptar</button>
             </div>
         </div>
     </div>

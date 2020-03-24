@@ -33,7 +33,15 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                 }]
             },
             options: {
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: { // Para comenzar en 0
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
             }
         });
     };
@@ -58,20 +66,41 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
     };
 
     var updaterResultPlot = function () { // Grafico de código de resultados
+        
+        var labels = [];
+        var data = [];
+        var colors = [];
+        var grIncr = Math.floor(200 / Object.getOwnPropertyNames($rootScope.stats.exitCodes).length); // Incremento de color de cada barra
+        var gray = 5;
+        for (var k in $rootScope.stats.exitCodes) {
+            labels.push(k);
+            data.push($rootScope.stats.exitCodes[k]);
+            colors.push("rgba(" + gray + "," + gray + "," + gray + ",0.9)");
+            gray += grIncr;
+        }
+
         if ($scope.exitCodeChart)
             $scope.exitCodeChart.destroy();
         $scope.exitCodeChart = new Chart(document.getElementById("exitCode-chart"), {
             type: 'bar',
             data: {
-                labels: ["S001", "S002"],
+                labels: labels,
                 datasets: [{
                     label: "Código de resultado",
-                    backgroundColor: ["#333333", "#777777"],
-                    data: [120, 12],
+                    backgroundColor: colors,
+                    data: data,
                 }]
             },
             options: {
-                maintainAspectRatio: true
+                maintainAspectRatio: true,
+                scales: { // Comenzar en 0
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true 
+                        }
+                    }]
+                }
             }
         });
     };
@@ -98,6 +127,8 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
 
         var nodes = [];
         var edges = [];
+
+        var exitCodes = []; // Lista de codigos de salida para mostrar en el grafo
 
         for (var k in tree) { // Crear cada nodo del arbol
             var nodeTitle = tree[k].header.substring(0, 15)+"-\n"+tree[k].header.substring(15, 30)+"-\n"+tree[k].header.substring(30, 50);
@@ -126,6 +157,35 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                         label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
                             (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + weights[k][tree[k].options[j].goto] + ")"
                     });
+                }else{
+                    if(tree[k].options[j].exitCode){
+                        if(!exitCodes.includes(tree[k].options[j].exitCode)){
+                            exitCodes.push(tree[k].options[j].exitCode); // Agregar a la lista
+                            nodes.push({ // Crear un nodo para mostrar el punto de finalizacion
+                                id: tree[k].options[j].exitCode,
+                                value: 1,
+                                label: tree[k].options[j].exitCode || "S/C",
+                                shape: "circle",
+                                font: {
+                                    size: 12,
+                                    color: "white",
+                                    face: "arial"
+                                },
+                                color: "#AAAAAA"
+                            });
+                        }
+                        // Crear el enlace al nodo de salida
+                        edges.push({
+                            from: k,
+                            to: tree[k].options[j].exitCode,
+                            smooth: {
+                                type: 'curvedCW',
+                                roundness: Math.random() - 0.5
+                            },
+                            value: 1,
+                            label: "Cód. de salida"
+                        });
+                    }
                 }
             }
         }

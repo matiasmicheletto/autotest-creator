@@ -25,7 +25,7 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
     });
 
     $scope.loadMenu = function (index, exitCode) { // Callback de los botones
-        if(exitCode) // Registrar si hay codigo de finalizacion
+        if(exitCode) // Registrar si hay codigo de finalizacion (si el goto no es de finalizacion, el exitCode puede sobreescribirse luego)
             $rootScope.logData.exitCode = exitCode;
         if(index == -1){ // Indicador de finalizacion del test
             $scope.endTest();

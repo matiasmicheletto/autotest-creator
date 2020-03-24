@@ -28,7 +28,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                             // Ir al tablero
                             $rootScope.userLogged = true;
                             $rootScope.loading = false;
-                            $location.path('/');
+                            $location.path('/config'); // TODO: poner /
                             $rootScope.$apply();
                         })
                         .catch(function (err2) {
@@ -113,13 +113,13 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                     $rootScope.helpContent = "<p>La lista muestra todos los árboles de decisión que fueron creados. Sólo un árbol por vez puede estar activo y una vez que se cargan los árboles a la base de datos ya no pueden volver a ser modificados.</p><p>Los nuevos árboles creados pueden modificarse múltiples veces antes de guardar la configuración global de este menú.</p>";
                     break;
                 case "ages-plot":
-                    $rootScope.helpContent = "<p>El gráfico de barras muestra un histograma de edades de los usuarios. Sólo se contabiliza la edad luego del registro del primer resultado.</p>";
+                    $rootScope.helpContent = "<p>El gráfico de barras muestra un histograma de edades de los usuarios. Sólo se contabiliza la edad luego del registro del primer resultado. Los rangos de edad del histograma se crean a medida que aparecen registros correspondientes a dichos intervalos.</p>";
                     break;
                 case "genders-plot":
                     $rootScope.helpContent = "<p>El gráfico circular muestra la proporción de usuarios por género. Sólo se contabiliza el género seleccionado luego del registro del primer resultado.</p>";
                     break;
                 case "exitCodes-plot":
-                    $rootScope.helpContent = "<p>Cada opción de cada nodo del árbol de decisiones puede tener asociado un código de salida. Cada vez que el usuario selecciona dicha opción del menú, se contabiliza el código de salida correspondiente. El significado de cada código de salida es definido por el administrador en al momento de diseñar el árbol de decisiones.</p>";
+                    $rootScope.helpContent = "<p>Cada opción de cada nodo del árbol de decisiones puede tener asociado un código de salida. Cada vez que el usuario selecciona dicha opción del menú, se contabiliza el código de salida correspondiente. El significado de cada código de salida es definido por el administrador al momento de diseñar el árbol de decisiones.</p>";
                     break;
                 case "paths-plot":
                     $rootScope.helpContent = "<p>El gráfico permite visualizar el árbol de decisiones actual donde el espesor de cada camino es proporcional a la cantidad de veces que un usuario pasó por ese camino.</p>";
