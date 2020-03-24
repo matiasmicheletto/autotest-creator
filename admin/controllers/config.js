@@ -214,11 +214,50 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
 
     $scope.validateTree = function(){ // Verifica el arbol creado: busca lazos infinitos y reconfigura modelo
 
+        // Evaluar modelo para buscar lazos infinitos o nodos sin salida
+        var tree = $scope.tempConfig.trees[$scope.editingIndex].tree;
 
-        // Algoritmo de checkeo de lazo infinito.
-
-        // Si todo esta ok:
-        $("#tree-edit-modal").modal("hide");
+        var goToNode = function(index){ // Recorrer todo el arbol
+            var exit = false; // Indica si se encuentra opcion de salida en el nodo actual
+            for(var k in tree[index].options){ // Para cada enlace del nodo actual
+                if(tree[index].options[k].type=="goto"){ // Enlace a nodo
+                    exit = true; // Si puede saltar a otro nodo, hay salida
+                    var status = goToNode(tree[index].options[k].goto); // Evaluar ese nodo
+                    if(status != "ok") // Si ya se detecto error
+                        return status; // Retornar por backtrack
+                }
+                if(tree[index].options[k].type=="exit" && tree[index].options[k].exitCode) // Opcion de salida
+                    exit = true; // Este nodo tiene al menos una condicion de salida
+            }
+            if(!exit) return "exit"; // Si ningun nodo permite salir o pasar a otro nodo, es arbol sin salida
+            return "ok";
+        }
+    
+        var status;
+        try{ // Si hay lazos sin salida, se llena el stack
+            status = goToNode(0); // Iniciar el recorrido por el nodo 0
+        }catch(e){
+            console.log(e.message);
+            status = "loop";
+        }
+    
+        switch(status){
+            case "exit":
+                console.log("Se detectaron nodos sin salida.");
+                toastr.error("El arbol tiene nodos sin salida");
+                break;
+            case "loop":
+                console.log("Se detectaron lazos infinitos.");
+                toastr.error("El arbol tiene lazos infinitos");
+                break;
+            case "ok":
+                console.log("Arbol correcto");
+                toastr.success("Arbol correcto");
+                $("#tree-edit-modal").modal("hide");
+                break;
+            default:
+                break;
+        }
     };
 
     $scope.saveConfig = function(){ // Cuando el admin confirma aplicar la configuracion actual a la base de datos, se sobre escribe toda la configuracion
