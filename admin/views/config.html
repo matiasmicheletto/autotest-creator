@@ -138,6 +138,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4>Configurar nuevo espacio de operación</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div>
@@ -168,6 +171,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4>Confirme la operación</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <p>La configuración que se muestra en esta pantalla se tornará activa y los cambios tendrán efecto
@@ -182,7 +188,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="tree-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="tree-edit-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width:85%">
         <div class="modal-content">
             <div class="modal-header">
@@ -245,9 +251,9 @@
                                                 </td>
                                                 <td data-title="Tipo">
                                                     <select class="form-control form-control-sm" ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].type">
-                                                        <option value="goto" ng-selected="true">Enlace a nodo</option>
-                                                        <option value="link">Enlace externo</option>
-                                                        <option value="exit">Finalizar test</option>
+                                                        <option ng-value="goto" ng-selected="true">Enlace a nodo</option>
+                                                        <option ng-value="link">Enlace externo</option>
+                                                        <option ng-value="exit">Finalizar test</option>
                                                     </select>
                                                 </td>
                                                 <td data-title="Enlace">

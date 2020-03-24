@@ -68,8 +68,6 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         var nodes = [];
         var edges = [];
 
-        var exitCodes = []; // Lista de codigos de salida para mostrar en el grafo
-
         for (var k in tree) { // Crear cada nodo del arbol
             var nodeTitle = tree[k].header.substring(0, 15)+"-\n"+tree[k].header.substring(15, 30)+"-\n"+tree[k].header.substring(30, 50);
             nodes.push({
@@ -82,46 +80,69 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                     color: "white", 
                     face: "arial"
                 },
-                color: "#444444"
+                color: "#444444" // Gris oscuro
             });
             for (var j in tree[k].options) { // Crear cada enlace
-                if (tree[k].options[j].goto != -1){
-                    edges.push({
-                        from: k,
-                        to: tree[k].options[j].goto,
-                        smooth: {
-                            type: 'curvedCW',
-                            roundness: Math.random() - 0.5
-                        },
-                        label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + (tree[k].options[j].text.length > 10 ? "..." : "")
-                    });
-                }else{
-                    if(tree[k].options[j].exitCode){
-                        if(!exitCodes.includes(tree[k].options[j].exitCode)){
-                            exitCodes.push(tree[k].options[j].exitCode); // Agregar a la lista
-                            nodes.push({ // Crear un nodo para mostrar el punto de finalizacion
-                                id: tree[k].options[j].exitCode,
-                                label: tree[k].options[j].exitCode || "S/C",
-                                shape: "circle",
-                                font: {
-                                    size: 12,
-                                    color: "white",
-                                    face: "arial"
-                                },
-                                color: "#AAAAAA"
-                            });
-                        }
-                        // Crear el enlace al nodo de salida
+                switch(tree[k].options[j].type){
+                    case 'goto':
                         edges.push({
                             from: k,
-                            to: tree[k].options[j].exitCode,
+                            to: tree[k].options[j].goto,
+                            smooth: {
+                                type: 'curvedCW',
+                                roundness: Math.random() - 0.5
+                            },
+                            label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + (tree[k].options[j].text.length > 10 ? "..." : "")
+                        });
+                        break;
+                    case 'link':
+                        var newId = $rootScope.generateID(20); // Identificador unico
+                        nodes.push({ // Crear un nodo para mostrar el enlace externo
+                            id: newId,
+                            label: tree[k].options[j].text.substring(0, 8)+"..." || "S/L",
+                            shape: "circle",
+                            font: {
+                                size: 12,
+                                color: "white",
+                                face: "arial"
+                            },
+                            color: "#AAAAAA" // Gris claro
+                        });
+                        edges.push({ // Crear el enlace al nodo de salida
+                            from: k,
+                            to: newId,
+                            smooth: {
+                                type: 'curvedCW',
+                                roundness: Math.random() - 0.5
+                            },
+                            label: "Enlace ext."
+                        });
+                        break;
+                    case 'exit':
+                        var newId = $rootScope.generateID(20); // Identificador unico
+                        nodes.push({ // Crear un nodo para mostrar el punto de finalizacion
+                            id: newId,
+                            label: tree[k].options[j].exitCode || "S/C",
+                            shape: "circle",
+                            font: {
+                                size: 12,
+                                color: "white",
+                                face: "arial"
+                            },
+                            color: "#AA0000" // Rojo oscuro
+                        });
+                        edges.push({ // Crear el enlace al nodo de salida
+                            from: k,
+                            to: newId,
                             smooth: {
                                 type: 'curvedCW',
                                 roundness: Math.random() - 0.5
                             },
                             label: "Cód. de salida"
                         });
-                    }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -193,7 +214,6 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
 
     $scope.validateTree = function(){ // Verifica el arbol creado: busca lazos infinitos y reconfigura modelo
 
-        // Nodos con type = exit, agregar goto = -1
 
         // Algoritmo de checkeo de lazo infinito.
 

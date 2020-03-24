@@ -24,13 +24,9 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
         console.log(err);
     });
 
-    $scope.loadMenu = function (index, exitCode) { // Callback de los botones
-        if(exitCode) // Registrar si hay codigo de finalizacion (si el goto no es de finalizacion, el exitCode puede sobreescribirse luego)
-            $rootScope.logData.exitCode = exitCode;
-        if(index == -1){ // Indicador de finalizacion del test
-            $scope.endTest();
-        }else{ // Pasar a la siguiente vista
-            if ($scope.tree[index]){
+    $scope.loadMenu = function (index) { // Callback de botones con enlace a sgte nodo
+        if(index > 0){ // Pasar a la siguiente vista
+            if ($scope.tree[index]){ // Control
                 $rootScope.logData.actionStack.push({
                     index: index,
                     timestamp: Date.now()
@@ -38,6 +34,11 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
                 $scope.current = $scope.tree[index];
             }
         }
+    };
+
+    $scope.exit = function(code){ // Finalizacion del test
+        $rootScope.logData.exitCode = code;
+        $scope.endTest();
     };
 
     $scope.endTest = function(){ // Callback de finalizacion del test
