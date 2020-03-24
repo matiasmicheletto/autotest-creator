@@ -248,7 +248,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                 break;
             case "loop":
                 console.log("Se detectaron lazos infinitos.");
-                toastr.error("El arbol tiene lazos infinitos");
+                toastr.error("El arbol tiene lazos infinitos o hay nodos mal referenciados");
                 break;
             case "ok":
                 console.log("Arbol correcto");
@@ -258,6 +258,26 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             default:
                 break;
         }
+    };
+
+    $scope.testInDevice = function(){ // Iniciar dispositivo para probar modelo activo
+
+        $scope.activeIndex = $scope.tempConfig.trees.findIndex(function(el){return el.active});
+        $scope.current = $scope.tempConfig.trees[$scope.activeIndex].tree[0];
+
+        $scope.loadMenu = function (index) { // Callback de botones con enlace a sgte nodo
+            if(index > 0){ // Pasar a la siguiente vista
+                if ($scope.tempConfig.trees[$scope.activeIndex].tree[index]) // Control
+                    $scope.current = $scope.tempConfig.trees[$scope.activeIndex].tree[index];
+            }
+        };
+
+        $scope.exit = function(code){ // Finalizacion del test
+            toastr.info("Codigo de finalización: "+code);
+            $("#app-test-modal").modal("hide");
+        };
+        
+        $("#app-test-modal").modal("show");
     };
 
     $scope.saveConfig = function(){ // Cuando el admin confirma aplicar la configuracion actual a la base de datos, se sobre escribe toda la configuracion
