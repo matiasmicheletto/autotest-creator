@@ -28,7 +28,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                             // Ir al tablero
                             $rootScope.userLogged = true;
                             $rootScope.loading = false;
-                            $location.path('/config'); // TODO: poner /
+                            $location.path('/');
                             $rootScope.$apply();
                         })
                         .catch(function (err2) {
@@ -136,7 +136,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
     }])
     .config(["$routeProvider", function ($routeProvider) {
         $routeProvider
-            .when("/", {
+            .when("/dashboard", {
                 templateUrl: "views/dashboard.html",
                 controller: "dashboard"
             })
@@ -144,7 +144,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                 templateUrl: "views/login.html",
                 controller: "login"
             })
-            .when("/config", {
+            .when("/", {
                 templateUrl: "views/config.html",
                 controller: "config"
             });

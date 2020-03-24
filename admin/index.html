@@ -47,10 +47,10 @@
 		<span class="navbar-toggler-icon"></span>
 	  </button>
 	
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent" ng-init="currentLocation='config'">
 		<ul class="navbar-nav mr-auto">
-		  <li class="nav-item {{currentLocation == 'dashboard' ? 'active' : ''}}"><a class="nav-link" href="#!/" ng-click="currentLocation='dashboard'">Tablero</a></li>
-		  <li class="nav-item {{currentLocation == 'config' ? 'active' : ''}}"><a class="nav-link" href="#!/config" ng-click="currentLocation='config'">Configuración</a></li>
+			<li class="nav-item {{currentLocation == 'config' ? 'active' : ''}}"><a class="nav-link" href="#!/" ng-click="currentLocation='config'">Configuración</a></li>
+			<li class="nav-item {{currentLocation == 'dashboard' ? 'active' : ''}}"><a class="nav-link" href="#!/dashboard" ng-click="currentLocation='dashboard'">Tablero</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li class="nav-item" style="cursor: pointer;" title="Salir"><a class="nav-link" ng-click="logout()"><i class="material-icons">power_settings_new</i></a></li>
