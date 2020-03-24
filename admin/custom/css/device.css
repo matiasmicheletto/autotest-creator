@@ -28,7 +28,7 @@ https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_device_smartphone
   border-radius: 10px;
 }
 
-/* The circle on the bottom of the device */
+/* The circle on the bottom of the device 
 .smartphone:after {
   content: '';
   display: block;
@@ -41,6 +41,7 @@ https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_device_smartphone
   background: #333;
   border-radius: 50%;
 }
+*/
 
 /* The screen (or content) of the device */
 .smartphone .device-content {

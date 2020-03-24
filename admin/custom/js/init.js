@@ -134,7 +134,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                     $rootScope.helpContent = "<p>El gráfico permite visualizar el árbol de decisiones actual donde el espesor de cada camino es proporcional a la cantidad de veces que un usuario pasó por ese camino.</p>";
                     break;
                 case "tree-container":
-                    $rootScope.helpContent = "<p>El gráfico permite visualizar el árbol de decisiones activo. Puede arrastrar los nodos, desplazar la vista o hacer zoom.</p>";
+                    $rootScope.helpContent = "<p>El gráfico permite visualizar el árbol de decisiones activo. Puede arrastrar los nodos, desplazar la vista o hacer zoom.</p><p>Con el botón <i class='material-icons'>phone_android</i> de la derecha puede simular el comportamiento del arbol activo.</p>";
                     break;
                 default:
                     $rootScope.helpContent = "No se encontro la referencia";

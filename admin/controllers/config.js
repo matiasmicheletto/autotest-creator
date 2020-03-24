@@ -258,6 +258,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             default:
                 break;
         }
+        updateTreePlot(); // Actualizar la visualizacion
     };
 
     $scope.testInDevice = function(){ // Iniciar dispositivo para probar modelo activo
