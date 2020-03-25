@@ -287,6 +287,8 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         for(var k in $scope.tempConfig.trees){
             delete $scope.tempConfig.trees[k].editable;
         }
+        
+        
         $rootScope.config = angular.copy($scope.tempConfig);
         $("#confirm-modal").modal("hide");
 

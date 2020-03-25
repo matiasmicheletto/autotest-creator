@@ -33,8 +33,8 @@ var app = angular.module('autotest', ['ngRoute', 'ngSanitize'])
         // Inicializacion y componentes de F7
         var f7 = new Framework7({ // Libreria de estilos
             root: '#app',
-            name: 'Autotest COVID19 UNS',
-            id: 'com.autotest-covid-uns.test',
+            name: 'Autotest App',
+            id: 'com.autotest-creator.test',
             angular: true
         });
 

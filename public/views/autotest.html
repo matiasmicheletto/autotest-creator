@@ -15,15 +15,24 @@
 		
 			<div class="menu-btn-container row" ng-repeat="(key, item) in current.options track by $index">
 				
-				<button ng-if="item.goto" class="menu-btn button button-raised button-fill button-round" 
+				<!-- Enlace a siguiente menu -->
+				<button ng-if="item.type=='goto'" class="menu-btn button button-raised button-fill button-round" 
 					style="background-color: {{item.color || '#1a068d'}};" 
-					ng-click="loadMenu(item.goto, item.exitCode)"
+					ng-click="loadMenu(item.goto)"
 					ng-bind-html="item.text">
 				</button>
 				
-				<a ng-if="item.href" class="link external menu-btn button button-raised button-fill button-round" 
+				<!-- Enlace externo-->
+				<a ng-if="item.type=='link'" class="link external menu-btn button button-raised button-fill button-round" 
 					style="background-color: {{item.color || '#1a068d'}};" 
 					ng-href="{{item.href}}"
+					ng-bind-html="item.text">
+				</a>
+
+				<!-- Finalizacion -->
+				<a ng-if="item.type=='exit'" class="menu-btn button button-raised button-fill button-round" 
+					style="background-color: {{item.color || '#1a068d'}};" 
+					ng-click="exit(item.exitCode)"
 					ng-bind-html="item.text">
 				</a>
 
