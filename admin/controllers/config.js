@@ -187,7 +187,8 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             author: firebase.auth().currentUser.email,
             id: "T00"+($scope.tempConfig.trees.length+1),
             timestamp: Date.now(),
-            editable: true, // Antes de cargarse a la db, puede ser editado
+            editable: true, // Antes de cargarse a la db como activo, puede ser editado
+            validated: false, // No puede cargarse a la db como activo si no esta validado
             tree: [{ // Crearlo con un solo nodo
                 header:"",
                 content:"",
@@ -209,7 +210,13 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
 
     $scope.editTree = function(index){ // Editar un arbol recientemente creado
         $scope.editingIndex = index; // Tomar indice para mostrar arbol en la vista
+        $scope.tempConfig.trees[$scope.editingIndex].validated = false; // Indicar que no esta validado aun
         $("#tree-edit-modal").modal("show");
+    };
+
+    $scope.cancelEdition = function(){ // Salir del editor. El arbol editado no se verifica por lo que pueden quedar lazos o sin condicion de salida.
+        toastr.info("Arbol no verificado! No guarde la configuración actual.");
+        $("#tree-edit-modal").modal("hide");
     };
 
     $scope.validateTree = function(){ // Verifica el arbol creado: busca lazos infinitos y reconfigura modelo
@@ -253,6 +260,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             case "ok":
                 console.log("Arbol correcto");
                 toastr.success("Arbol correcto");
+                $scope.tempConfig.trees[$scope.editingIndex].validated = true; // Habilitar activacion
                 $("#tree-edit-modal").modal("hide");
                 break;
             default:
@@ -283,18 +291,57 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
 
     $scope.saveConfig = function(){ // Cuando el admin confirma aplicar la configuracion actual a la base de datos, se sobre escribe toda la configuracion
 
-        // Deshabilitar edicion de todos los arboles
+        // Verificar arboles validados y deshabilitar edicion de los arboles que se publican como activos
+        var forUpdate = {}; // Lista de arboles a actualizar estado
+        var forPush = []; // Lista de arboles a subir
+        var indexList = []; // Lista de indices del arreglo tempConfig.trees de los arboles que se van a subir
         for(var k in $scope.tempConfig.trees){
-            delete $scope.tempConfig.trees[k].editable;
+            if($scope.tempConfig.trees[k].active){ // Si se selecciona un arbol como activo
+                if(!$scope.tempConfig.trees[k].validated){ // Intenta activar un arbol no validado
+                    toastr.error("El modelo de decisiones que intenta activar no fue validado. Edite el árbol y seleccione 'Validar'");
+                    $("#confirm-modal").modal("hide");
+                    return;
+                }
+                $scope.tempConfig.trees[k].editable = false; // Deshabilitar la edicion permanentemente
+            }
+            if($scope.tempConfig.trees[k].key){
+                forUpdate["decisionTrees/"+$scope.tempConfig.trees[k].key+"/active"] = $scope.tempConfig.trees[k].active;
+            }else{
+                forPush.push($scope.tempConfig.trees[k]);
+                indexList.push(k);
+            }
         }
-        
-        
-        $rootScope.config = angular.copy($scope.tempConfig);
-        $("#confirm-modal").modal("hide");
 
-        // TODO: cargar a firebase
-        console.log("Actualizar config");
-        console.log($rootScope.config);
+        // Actualizar configuracion de filtros
+        forUpdate["config/locationFilter"] = $scope.tempConfig.locationFilter;
+        forUpdate["config/logLimit"] = $scope.tempConfig.logLimit;
+        
+        $rootScope.loading = true;
+        middleware.db.update(forUpdate) // Sincronizar estado de los arboles que estaban en db y configuracion de filtros
+        .then(function(){
+            middleware.db.pushMultiple(forPush,"decisionTrees") // Subir los nuevos arboles creados
+            .then(function(res){
+                for(var k in res) // Poner las claves a los arboles por si vuelve a subir cambios
+                    $scope.tempConfig.trees[indexList[k]].key = res[k].key;
+                    $rootScope.config = angular.copy($scope.tempConfig);
+                    $rootScope.loading = false;
+                    $scope.$apply();
+                    toastr.success("La configuración actual fue sincronizada con la base de datos.")
+                    $("#confirm-modal").modal("hide");            
+            })
+            .catch(function(err2){
+                console.log(err2);
+                $rootScope.loading = false;
+                $scope.$apply();
+                toastr.error("Ocurrió un error al sincronizar los árboles creados. Vuelva a intentarlo más tarde.");
+            });
+        })
+        .catch(function(err){
+            console.log(err);
+            $rootScope.loading = false;
+            $scope.$apply();
+            toastr.error("Ocurrió un error al sincronizar árboles activos. Vuelva a intentarlo más tarde.");
+        });
     };
 
     $scope.resetConfig = function(){ // Reestablecer el modelo que se muestra en la vista al de la base de datos

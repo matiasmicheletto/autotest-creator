@@ -124,7 +124,7 @@
             for (var k in dataArray) // Para cada objeto 
                 job.push(firebase.database().ref(path).push(dataArray[k])); // TODO: usar multiples paths 
             Promise.all(job) // Ejecutar promise
-                .then(function (snapshot) { // Snapshot es un array que contiene los keys
+                .then(function (snapshot) { // Snapshot es un array que contiene los keys (snapshot[k].key)
                     return fulfill(snapshot); // Del otro lado se puede hacer un for para retornar
                 })
                 .catch(function (error) { // Ver si retorna un solo error o varios

@@ -22,7 +22,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                             snapshot.forEach(function (tree) {
                                 var t = tree.val();
                                 t.key = tree.key;
-                                t.editable = false; // Ningun arbol de la base de datos puede ser editado
+                                //t.editable = false; // Ningun arbol de la base de datos puede ser editado
                                 $rootScope.config.trees.push(t);
                             });
                             // Ir al tablero
@@ -119,7 +119,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                     $rootScope.helpContent = "<p>Configure la cantidad de veces que un mismo usuario puede realizar el autotest y el tiempo que debe transcurrir entre cada resultado registrado en la base de datos</p>";
                     break;
                 case "tree-list":
-                    $rootScope.helpContent = "<p>La lista muestra todos los árboles de decisión que fueron creados. Sólo un árbol por vez puede estar activo y una vez que se cargan los árboles a la base de datos ya no pueden volver a ser modificados.</p><p>Los nuevos árboles creados pueden modificarse múltiples veces antes de guardar la configuración global de este menú.</p>";
+                    $rootScope.helpContent = "<p>La lista muestra todos los árboles de decisión que fueron creados. Sólo un árbol por vez puede estar activo y una vez que se cargan los árboles a la base de datos ya no pueden volver a ser modificados.</p><p>Los nuevos árboles creados pueden modificarse múltiples veces antes de ser habilitados como <b>\"activo\"</b>.</p>";
                     break;
                 case "ages-plot":
                     $rootScope.helpContent = "<p>El gráfico de barras muestra un histograma de edades de los usuarios. Sólo se contabiliza la edad luego del registro del primer resultado. Los rangos de edad del histograma se crean a medida que aparecen registros correspondientes a dichos intervalos.</p>";
