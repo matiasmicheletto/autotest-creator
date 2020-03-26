@@ -30,3 +30,7 @@
 .toast-error {
 	background-color: darkred;
 }
+
+.material-icons{
+    vertical-align: middle;
+}

@@ -117,13 +117,13 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
         var weights = {};
         var maxWeight = 0; // Para normalizar los valores
         for (var k in $rootScope.pathStats[treeData.id]) {
-            if (!weights[k.split('_')[1]])
-                weights[k.split('_')[1]] = {};
-            weights[k.split('_')[1]][k.split('_')[2]] = $rootScope.pathStats[treeData.id][k];
+            var p = k.split('_'); // Caminos
+            if (!weights[p[1]])
+                weights[p[1]] = {};
+            weights[p[1]][p[2]] = $rootScope.pathStats[treeData.id][k];
             if($rootScope.pathStats[treeData.id][k] > maxWeight)
                 maxWeight = $rootScope.pathStats[treeData.id][k];
         }
-        console.log(weights);
 
         var nodes = [];
         var edges = [];
@@ -145,6 +145,23 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
             for (var j in tree[k].options) { // Crear cada enlace (los enlaces externos no se grafican)
                 switch(tree[k].options[j].type){
                     case "goto": // Enlace a otro nodo
+                        var w; // Peso del enlace
+                        var lbl; // Etiqueta
+                        if(weights[k]){
+                            if(weights[k][tree[k].options[j].goto]){
+                                w = weights[k][tree[k].options[j].goto];
+                                lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
+                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + w + ")";
+                            }else{
+                                w = 0;
+                                lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
+                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(0)";
+                            }
+                        }else{
+                            w = 0;
+                            lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
+                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(0)";
+                        }
                         edges.push({
                             from: k,
                             to: tree[k].options[j].goto,
@@ -152,9 +169,8 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                                 type: 'curvedCW',
                                 roundness: Math.random() - 0.5
                             },
-                            value: Math.round(weights[k][tree[k].options[j].goto]/maxWeight*10) || 1,
-                            label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
-                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + weights[k][tree[k].options[j].goto] + ")"
+                            value: Math.round(w/maxWeight*10),
+                            label: lbl
                         });
                         break;
                     case "link": // Enlace externo
@@ -181,6 +197,39 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                             value: 1,
                             label: "Enlace ext."
                         });
+                        break;
+                    case 'decision': // Enlaces a cada una de las salidas
+                        const l = tree[k].options[j].decision.split(',');
+                        var rndss = -0.5; const rndIncr = 1/l.length; // Para roundess incremental
+                        var padding = Math.log(l.length) / Math.log(2); // Cantidad de digitos codigo binario de seleccion
+                        for(var ind = 0; ind < l.length; ind++){ // Para cada posible seleccion
+                            
+                            var w; // Peso del enlace
+                            var lbl; // Etiqueta
+                            if(weights[k]){
+                                if(weights[k][tree[k].options[j].decision[ind]]){
+                                    w = weights[k][tree[k].options[j].decision[ind]];
+                                    lbl = (ind).toString(2).padStart( padding,"0") + "\n(" + w + ")";
+                                }else{
+                                    w = 0;
+                                    lbl = (ind).toString(2).padStart( padding,"0") + "\n(0)";
+                                }
+                            }else{
+                                w = 0;
+                                lbl = (ind).toString(2).padStart( padding,"0") + "\n(0)";
+                            }
+                            edges.push({
+                                from: k,
+                                to: parseInt(l[ind]),
+                                smooth: {
+                                    type: 'curvedCW',
+                                    roundness: rndss
+                                },
+                                value: Math.round(w/maxWeight*10),
+                                label: lbl
+                            });
+                            rndss += rndIncr;
+                        }
                         break;
                     case "exit": // Salida y reporte
                         var newId = $rootScope.generateID(20); // Identificador unico

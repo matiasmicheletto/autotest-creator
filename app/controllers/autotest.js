@@ -36,6 +36,31 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
         }
     };
 
+    $scope.toggleButton = function(index){ // Alterna estado de selectores
+        if(!$scope.current.options[index].checked) // La primera vez es undefined
+            $scope.current.options[index].checked = true;
+        else
+            $scope.current.options[index].checked = false;
+    };
+
+    $scope.evalDecision = function(expr){ // Evalua los toggle seleccionados y decide a cual nodo ir
+
+        // Convertir expresion logica en array (si, cada vez)
+        var gotoArray = expr.split(',');
+        for(var k in gotoArray)
+            gotoArray[k] = parseInt(gotoArray[k]);
+
+        // Generar valor binario de las opciones elegidas
+        var binArray = "";
+        for(var k in $scope.current.options)
+            if($scope.current.options[k].type=="toggle")
+                binArray = binArray+($scope.current.options[k].checked ? "1":"0");
+
+        var index = parseInt(binArray,2); // Convertir a decimal
+
+        $scope.loadMenu(gotoArray[index]); // Ir a la vista correspondiente
+    };
+
     $scope.exit = function(code){ // Finalizacion del test
         $rootScope.logData.exitCode = code;
         $scope.endTest();

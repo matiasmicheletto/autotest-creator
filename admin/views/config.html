@@ -83,11 +83,11 @@
                                     <th scope="col">Nodos</th>
                                     <th scope="col">Creado por</th>
                                     <th scope="col">Creación</th>
-                                    <th scope="col">Activo</th>
+                                    <th scope="col">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="(key, treeData) in tempConfig.trees track by $index">
+                                <tr ng-repeat="(key, treeData) in tempConfig.trees track by $index" ng-if="!treeData.deleted">
                                     <th scope="row">{{$index+1}}</th>
                                     <td data-title="ID de árbol">{{treeData.id}}</td>
                                     <td data-title="Cantidad de nodos">{{treeData.tree.length}}</td>
@@ -104,6 +104,14 @@
                                         <a ng-if="treeData.editable" ng-click="editTree(key)" title="Editar"
                                             class="btn btn-sm btn-light">
                                             <i class="material-icons pmd-sm">edit</i>
+                                        </a>
+                                        <a ng-if="treeData.editable && !treeData.active" ng-click="deleteTree(key)" title="Eliminar"
+                                            class="btn btn-sm btn-light">
+                                            <i class="material-icons pmd-sm">delete</i>
+                                        </a>
+                                        <a ng-click="copyTree(key)" title="Crear copia"
+                                            class="btn btn-sm btn-light">
+                                            <i class="material-icons pmd-sm">filter_none</i>
                                         </a>
                                     </td>
                                 </tr>
@@ -223,6 +231,13 @@
                     <div class="card-body">
                         <div class="row" ng-repeat="(key, item) in current.options track by $index">
                             <div class="col-12" style="margin-bottom: 3px;">
+                                <!-- Toggle -->
+                                <a ng-if="item.type=='toggle'" class="btn btn-block" ng-click="toggleButton(key)"
+                                    style="background-color: {{item.color || '#1a068d'}};color:white">
+                                    <i style="float:left;" class="material-icons">{{item.checked ? 'check_box':'check_box_outline_blank'}}</i> {{item.text}}
+                                </a>
+                            </div>
+                            <div class="col-12" style="margin-bottom: 3px;">
                                 <!-- Enlace a siguiente menu -->
                                 <a ng-if="item.type=='goto'" class="btn btn-block" ng-click="loadMenu(item.goto)"
                                     style="background-color: {{item.color || '#1a068d'}};color:white" 
@@ -232,6 +247,13 @@
                             <div class="col-12" style="margin-bottom: 3px;">
                                 <!-- Enlace externo-->
                                 <a ng-if="item.type=='link'" class="btn btn-block" ng-href="{{item.href}}"
+                                    style="background-color: {{item.color || '#1a068d'}};color:white"
+                                    ng-bind-html="item.text">
+                                </a>
+                            </div>
+                            <div class="col-12" style="margin-bottom: 3px;">
+                                <!-- Decision -->
+                                <a ng-if="item.type=='decision'" class="btn btn-block" ng-click="evalDecision(item.decision)"
                                     style="background-color: {{item.color || '#1a068d'}};color:white"
                                     ng-bind-html="item.text">
                                 </a>
@@ -273,9 +295,8 @@
                                         <h3>Nodo {{key}}</h3>
                                     </div>
                                     <div class="col-2 text-right">
-                                        <a title="Eliminar nodo" class="btn btn-light">
-                                            <i class="material-icons"
-                                                ng-click="tempConfig.trees[editingIndex].tree.splice(key,1)">delete</i>
+                                        <a title="Eliminar nodo" class="btn btn-light" ng-click="tempConfig.trees[editingIndex].tree.splice(key,1)">
+                                            <i class="material-icons">delete</i>
                                         </a>
                                     </div>
                                 </div>
@@ -309,8 +330,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="(key2, option) in tempConfig.trees[editingIndex].tree[key].options track by $index"
-                                                ng-init="tempConfig.trees[editingIndex].tree[key].options[key2].type='goto'">
+                                            <tr ng-repeat="(key2, option) in tempConfig.trees[editingIndex].tree[key].options track by $index">
                                                 <th scope="row">{{$index+1}}</th>
                                                 <td data-title="Texto">
                                                     <input class="form-control form-control-sm" type="text"
@@ -321,7 +341,9 @@
                                                     <select class="form-control form-control-sm"
                                                         ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].type">
                                                         <option value="goto">Enlace a nodo</option>
+                                                        <option value="toggle">Selector</option>
                                                         <option value="link">Enlace externo</option>
+                                                        <option value="decision">Decisión</option>
                                                         <option value="exit">Finalizar test</option>
                                                     </select>
                                                 </td>
@@ -332,10 +354,20 @@
                                                         placeholder="Vínculo"
                                                         ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].href">
                                                     <input
+                                                        ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='toggle'"
+                                                        class="form-control form-control-sm" type="text"
+                                                        placeholder="Código botón"
+                                                        ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].toggleCode">
+                                                    <input
                                                         ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='goto'"
                                                         class="form-control form-control-sm" type="number"
                                                         placeholder="Ir a"
                                                         ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].goto">
+                                                    <input
+                                                        ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='decision'"
+                                                        class="form-control form-control-sm" type="text"
+                                                        placeholder="Ir a"
+                                                        ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].decision">
                                                     <input
                                                         ng-if="tempConfig.trees[editingIndex].tree[key].options[key2].type=='exit'"
                                                         class="form-control form-control-sm" type="text"
@@ -345,11 +377,11 @@
                                                 <td data-title="Color">
                                                     <select class="form-control form-control-sm"
                                                         ng-model="tempConfig.trees[editingIndex].tree[key].options[key2].color">
-                                                        <option value="#1A068D">Azul</option>
-                                                        <option value="#00AA00">Verde</option>
-                                                        <option value="#AA0000">Rojo</option>
-                                                        <option value="#830083">Fucsia</option>
-                                                        <option value="#FF6C37">Coral</option>
+                                                        <option value="#1A068D" style="color:#1A068D;"><b>Azul</b></option>
+                                                        <option value="#00AA00" style="color:#00AA00;"><b>Verde</b></option>
+                                                        <option value="#AA0000" style="color:#AA0000;"><b>Rojo</b></option>
+                                                        <option value="#830083" style="color:#830083;"><b>Fucsia</b></option>
+                                                        <option value="#FF6C37" style="color:#FF6C37;"><b>Coral</b></option>
                                                     </select>
                                                 </td>
                                                 <td data-title="Eliminar">
@@ -364,7 +396,7 @@
                                 </div>
                                 <div class="row float-right">
                                     <button type="button" title="Agregar opción" class="btn btn-light btn-sm"
-                                        ng-click="tempConfig.trees[editingIndex].tree[key].options.push({text:'', goto:key2})"><i
+                                        ng-click="tempConfig.trees[editingIndex].tree[key].options.push({type:'goto', text:'', goto:key})"><i
                                             class="material-icons pmd-sm">add_circle_outline</i></button>
                                 </div>
 
@@ -376,10 +408,10 @@
 
                 <!--Fin card-->
 
-                <div class="row float-right">
-                    <button type="button" title="Agregar nodo" class="btn btn-light"
-                        ng-click="tempConfig.trees[editingIndex].tree.push({header:'', content:'', options:[]})">
-                        <i class="material-icons pmd-sm">add_circle_outline</i></button>
+                <div class="d-flex justify-content-center">
+                    <button type="button" title="Agregar nodo" class="btn btn-light btn-bg"
+                    ng-click="tempConfig.trees[editingIndex].tree.push({header:'', content:'', options:[]})">
+                    <i class="material-icons pmd-sm">add_circle_outline</i></button>
                 </div>
 
             </div>

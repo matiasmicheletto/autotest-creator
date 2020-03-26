@@ -82,9 +82,9 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                 },
                 color: "#444444" // Gris oscuro
             });
-            for (var j in tree[k].options) { // Crear cada enlace
+            for (var j in tree[k].options) { // Crear enlaces de cada opcion
                 switch(tree[k].options[j].type){
-                    case 'goto':
+                    case 'goto': // Solo un enlace al siguiente nodo
                         edges.push({
                             from: k,
                             to: tree[k].options[j].goto,
@@ -95,7 +95,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                             label: $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + (tree[k].options[j].text.length > 10 ? "..." : "")
                         });
                         break;
-                    case 'link':
+                    case 'link': // Enlace a un circulo que representa el link
                         var newId = $rootScope.generateID(20); // Identificador unico
                         nodes.push({ // Crear un nodo para mostrar el enlace externo
                             id: newId,
@@ -118,7 +118,24 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                             label: "Enlace ext."
                         });
                         break;
-                    case 'exit':
+                    case 'decision': // Enlaces a cada una de las salidas
+                        const l = tree[k].options[j].decision.split(',');
+                        var rndss = -0.5; const rndIncr = 1/l.length; // Para roundess incremental
+                        var padding = Math.log(l.length) / Math.log(2); // Cantidad de digitos codigo binario de seleccion
+                        for(var ind = 0; ind < l.length; ind++){ // Para cada posible seleccion
+                            edges.push({
+                                from: k,
+                                to: parseInt(l[ind]),
+                                smooth: {
+                                    type: 'curvedCW',
+                                    roundness: rndss
+                                },
+                                label: (ind).toString(2).padStart( padding,"0") // (codigo binario)
+                            });
+                            rndss += rndIncr;
+                        }
+                        break;
+                    case 'exit': // Enlace a circulo rojo con codigo de finalizacion
                         var newId = $rootScope.generateID(20); // Identificador unico
                         nodes.push({ // Crear un nodo para mostrar el punto de finalizacion
                             id: newId,
@@ -182,7 +199,6 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     };
 
     $scope.newTree = function(){ // Crear un nuevo arbol vacio
-        toastr.success("Nuevo arbol creado");
         var newTree = {
             author: firebase.auth().currentUser.email,
             id: "T00"+($scope.tempConfig.trees.length+1),
@@ -196,6 +212,25 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             }]
         };
         $scope.tempConfig.trees.push(newTree);
+        toastr.success("Nuevo arbol creado");
+    };
+
+    $scope.copyTree = function(index){ // Crear un nuevo arbol a partir de otro
+        var newTree = {
+            author: firebase.auth().currentUser.email,
+            id: "T00"+($scope.tempConfig.trees.length+1),
+            timestamp: Date.now(),
+            editable: true, // Antes de cargarse a la db como activo, puede ser editado
+            validated: false, // No puede cargarse a la db como activo si no esta validado
+            tree: angular.copy($scope.tempConfig.trees[index].tree)
+        };
+        $scope.tempConfig.trees.push(newTree);
+        toastr.success("Árbol duplicado");
+    };
+
+    $scope.deleteTree = function(index){ // Eliminar arbol
+        $scope.tempConfig.trees[index].deleted = true; // Se marca para eliminar luego de la db
+        toastr.info("Árbol eliminado");  
     };
 
     $scope.setActiveTree = function(index){ // Configurar arbol de la lista como activo
@@ -221,17 +256,55 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
 
     $scope.validateTree = function(){ // Verifica el arbol creado: busca lazos infinitos y reconfigura modelo
 
-        // Evaluar modelo para buscar lazos infinitos o nodos sin salida
         var tree = $scope.tempConfig.trees[$scope.editingIndex].tree;
+        
+        // Validar menues con selectores
+        for(var k in tree){
+            var toggleCntr = 0; // Contador de selectores por nodo
+            var exprs = []; // Lista de expresiones por nodo
+            for(var j in tree[k].options){ // Contar selectores y guardar expresiones
+                if(tree[k].options[j].type=="toggle")
+                    toggleCntr++;
+                if(tree[k].options[j].type=="decision"){
+                    if(!tree[k].options[j].decision){ // Una de las expresiones no esta definida
+                        toastr.error("Falta definir expresiones en el nodo "+k);
+                        return;        
+                    }
+                    exprs.push(tree[k].options[j].decision);
+                }
+            }
+            //
+            if(toggleCntr > 0 && exprs.length == 0){ // Si hay selectores pero no hay expresiones
+                toastr.error("No hay opciones de decisión para los selectores del nodo "+k);
+                return;
+            }
+            for(var j in exprs){
+                var exprLen = exprs[j].split(",").length;
+                if(exprLen != Math.pow(2,toggleCntr)){
+                    toastr.error("El nodo "+k+" tiene "+toggleCntr+" selectores, pero la lista de indices tiene "+exprLen+" indices");
+                    return;
+                }
+            }
+        }
 
+        // Evaluar modelo para buscar lazos infinitos o nodos sin salida
         var goToNode = function(index){ // Recorrer todo el arbol
             var exit = false; // Indica si se encuentra opcion de salida en el nodo actual
             for(var k in tree[index].options){ // Para cada enlace del nodo actual
-                if(tree[index].options[k].type=="goto"){ // Enlace a nodo
+                if(tree[index].options[k].type=="goto"){ // Enlace a otro nodo
                     exit = true; // Si puede saltar a otro nodo, hay salida
                     var status = goToNode(tree[index].options[k].goto); // Evaluar ese nodo
                     if(status != "ok") // Si ya se detecto error
                         return status; // Retornar por backtrack
+                }
+                if(tree[index].options[k].type=="decision"){
+                    var nodeList = tree[index].options[k].decision.split(','); // Lista de enlaces
+                    exit = true; // Suponer que puede ir a otro nodo
+                    for(var j in nodeList){
+                        var status = goToNode(nodeList[j]); // Evaluar ese nodo
+                        if(status != "ok") // Si ya se detecto error
+                            return status; // Retornar por backtrack       
+                    }
                 }
                 if(tree[index].options[k].type=="exit" && tree[index].options[k].exitCode) // Opcion de salida
                     exit = true; // Este nodo tiene al menos una condicion de salida
@@ -266,6 +339,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
             default:
                 break;
         }
+
         updateTreePlot(); // Actualizar la visualizacion
     };
 
@@ -276,16 +350,42 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
 
         $scope.loadMenu = function (index) { // Callback de botones con enlace a sgte nodo
             if(index > 0){ // Pasar a la siguiente vista
-                if ($scope.tempConfig.trees[$scope.activeIndex].tree[index]) // Control
+                if ($scope.tempConfig.trees[$scope.activeIndex].tree[index]){ // Control
                     $scope.current = $scope.tempConfig.trees[$scope.activeIndex].tree[index];
+                }
             }
+        };
+
+        $scope.toggleButton = function(index){ // Alterna estado de selectores
+            if(!$scope.current.options[index].checked) // La primera vez es undefined
+                $scope.current.options[index].checked = true;
+            else
+                $scope.current.options[index].checked = false;
+        };
+
+        $scope.evalDecision = function(expr){ // Evalua los toggle seleccionados y decide a cual nodo ir
+
+            // Convertir expresion logica en array (si, cada vez)
+            var gotoArray = expr.split(',');
+            for(var k in gotoArray)
+                gotoArray[k] = parseInt(gotoArray[k]);
+
+            // Generar valor binario de las opciones elegidas
+            var binArray = "";
+            for(var k in $scope.current.options)
+                if($scope.current.options[k].type=="toggle")
+                    binArray = binArray+($scope.current.options[k].checked ? "1":"0");
+
+            var index = parseInt(binArray,2); // Convertir a decimal
+
+            $scope.loadMenu(gotoArray[index]); // Ir a la vista correspondiente
         };
 
         $scope.exit = function(code){ // Finalizacion del test
             toastr.info("Codigo de finalización: "+code);
             $("#app-test-modal").modal("hide");
         };
-        
+
         $("#app-test-modal").modal("show");
     };
 
@@ -304,11 +404,19 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
                 }
                 $scope.tempConfig.trees[k].editable = false; // Deshabilitar la edicion permanentemente
             }
-            if($scope.tempConfig.trees[k].key){
+            if($scope.tempConfig.trees[k].key && !$scope.tempConfig.trees[k].deleted){ // Los que se borraron no deben actualizarse
                 forUpdate["decisionTrees/"+$scope.tempConfig.trees[k].key+"/active"] = $scope.tempConfig.trees[k].active;
             }else{
                 forPush.push($scope.tempConfig.trees[k]);
                 indexList.push(k);
+            }
+        }
+
+        // La eliminacion de arboles se realiza luego del checkeo anterior
+        var deleteJob = [];
+        for(var k in $scope.tempConfig.trees){
+            if($scope.tempConfig.trees[k].deleted && $scope.tempConfig.trees[k].key){ // Si es un arbol eliminado que estaba guardado
+                deleteJob.push(middleware.db.set(null,"decisionTrees/"+$scope.tempConfig.trees[k].key));
             }
         }
 
@@ -317,30 +425,51 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         forUpdate["config/logLimit"] = $scope.tempConfig.logLimit;
         
         $rootScope.loading = true;
-        middleware.db.update(forUpdate) // Sincronizar estado de los arboles que estaban en db y configuracion de filtros
+        Promise.all(deleteJob) // Eliminar arboles si habia marcados
         .then(function(){
-            middleware.db.pushMultiple(forPush,"decisionTrees") // Subir los nuevos arboles creados
-            .then(function(res){
-                for(var k in res) // Poner las claves a los arboles por si vuelve a subir cambios
-                    $scope.tempConfig.trees[indexList[k]].key = res[k].key;
-                    $rootScope.config = angular.copy($scope.tempConfig);
+            middleware.db.update(forUpdate) // Sincronizar estado de los arboles que estaban en db y configuracion de filtros
+                .then(function(){
+                    middleware.db.pushMultiple(forPush,"decisionTrees") // Subir los nuevos arboles creados
+                    .then(function(res){
+                        var job = []; // Promesas
+                        for(var k in res){ // Por cada nuevo arbol creado
+                            $scope.tempConfig.trees[indexList[k]].key = res[k].key; // Poner las claves a los arboles por si vuelve a subir cambios
+                            job.push(middleware.fs.set({},"pathStats",$scope.tempConfig.trees[indexList[k]].id)); // Crear document para los paths del nuevo arbol
+                        }
+                        Promise.all(job)
+                        .then(function(){
+                            $rootScope.config = angular.copy($scope.tempConfig);
+                            $rootScope.loading = false;
+                            $scope.$apply();
+                            toastr.success("La configuración actual fue sincronizada con la base de datos.")
+                            $("#confirm-modal").modal("hide");            
+                        })
+                        .catch(function(err4){
+                            console.log(err4);
+                            $rootScope.loading = false;
+                            $scope.$apply();
+                            toastr.error("Ocurrió un error al crear indicadores del nuevo árbol creado.");
+                        });
+                    })
+                    .catch(function(err3){
+                        console.log(err3);
+                        $rootScope.loading = false;
+                        $scope.$apply();
+                        toastr.error("Ocurrió un error al sincronizar los árboles creados. Vuelva a intentarlo más tarde.");
+                    });
+                })
+                .catch(function(err2){
+                    console.log(err2);
                     $rootScope.loading = false;
                     $scope.$apply();
-                    toastr.success("La configuración actual fue sincronizada con la base de datos.")
-                    $("#confirm-modal").modal("hide");            
+                    toastr.error("Ocurrió un error al sincronizar árboles activos. Vuelva a intentarlo más tarde.");
+                });
             })
-            .catch(function(err2){
-                console.log(err2);
-                $rootScope.loading = false;
-                $scope.$apply();
-                toastr.error("Ocurrió un error al sincronizar los árboles creados. Vuelva a intentarlo más tarde.");
-            });
-        })
         .catch(function(err){
             console.log(err);
             $rootScope.loading = false;
             $scope.$apply();
-            toastr.error("Ocurrió un error al sincronizar árboles activos. Vuelva a intentarlo más tarde.");
+            toastr.error("Ocurrió un error al eliminar arboles creados");
         });
     };
 
