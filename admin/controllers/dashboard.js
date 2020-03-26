@@ -113,27 +113,31 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
         });
         var tree = treeData.tree;
 
-        //console.log($rootScope.pathStats[treeData.id]);
-        var weights = {};
+        // Crear objeto de pesos de enlaces
+        var weights = [];
         var maxWeight = 0; // Para normalizar los valores
-        for (var k in $rootScope.pathStats[treeData.id]) {
-            var p = k.split('_'); // Caminos
-            if (!weights[p[1]])
-                weights[p[1]] = {};
-            weights[p[1]][p[2]] = $rootScope.pathStats[treeData.id][k];
-            if($rootScope.pathStats[treeData.id][k] > maxWeight)
+
+        for (var k in $rootScope.pathStats[treeData.id]) { // Para cada string que codifica el camino computado
+            var p = k.split('_'); // ["P", desde, hacia, camino]
+            var from = parseInt(p[1]);
+            var to = parseInt(p[2]);
+            var index = parseInt(p[3]);
+            weights[from] = []; // Crear array de nodos destino vacio
+            weights[from][to] = []; // Crear array de caminos para llegar a destino
+            weights[from][to][index] = $rootScope.pathStats[treeData.id][k]; // Asignar peso del enlace
+            if($rootScope.pathStats[treeData.id][k] > maxWeight) // Calcular maximo
                 maxWeight = $rootScope.pathStats[treeData.id][k];
         }
 
         var nodes = [];
         var edges = [];
 
-        for (var k in tree) { // Crear cada nodo del arbol
+        for (var k = 0; k < tree.length; k++) { // Para cada nodo del arbol, crear nodo de grafo
             var nodeTitle = tree[k].header.substring(0, 15)+"-\n"+tree[k].header.substring(15, 30)+"-\n"+tree[k].header.substring(30, 50);
             nodes.push({
                 id: k,
                 value: 1,
-                label: "[" + k + "] -- " + $rootScope.html2Text(nodeTitle) + "...",
+                label: "[" + k + "] -- " + $rootScope.html2Text(nodeTitle) + "...", // Titulo recortado
                 shape: "box",
                 font: {
                     size: 12,
@@ -142,26 +146,23 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                 },
                 color: "#444444" // Gris oscuro
             });
-            for (var j in tree[k].options) { // Crear cada enlace (los enlaces externos no se grafican)
+            for (var j = 0; j < tree[k].options.length; j++) { // Para cada enlace (los enlaces externos no se grafican)
                 switch(tree[k].options[j].type){
                     case "goto": // Enlace a otro nodo
-                        var w; // Peso del enlace
-                        var lbl; // Etiqueta
+                        var w = 0; // Peso del enlace defecto
+                        var lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
+                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(0)"; // Etiqueta defecto
+
                         if(weights[k]){
                             if(weights[k][tree[k].options[j].goto]){
-                                w = weights[k][tree[k].options[j].goto];
-                                lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
-                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + w + ")";
-                            }else{
-                                w = 0;
-                                lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
-                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(0)";
+                                if(weights[k][tree[k].options[j].goto][j]){ // Si hay camino computado, incrementar value
+                                    w = weights[k][tree[k].options[j].goto][j];
+                                    lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
+                                        (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(" + w + ")";
+                                }
                             }
-                        }else{
-                            w = 0;
-                            lbl = $rootScope.html2Text(tree[k].options[j].text).substring(0, 10) + 
-                                (tree[k].options[j].text.length > 10 ? "..." : "") + "\n(0)";
                         }
+
                         edges.push({
                             from: k,
                             to: tree[k].options[j].goto,
@@ -199,25 +200,23 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                         });
                         break;
                     case 'decision': // Enlaces a cada una de las salidas
-                        const l = tree[k].options[j].decision.split(',');
+                        const l = tree[k].options[j].decision.split(','); // Lista de nodos destino
                         var rndss = -0.5; const rndIncr = 1/l.length; // Para roundess incremental
-                        var padding = Math.log(l.length) / Math.log(2); // Cantidad de digitos codigo binario de seleccion
-                        for(var ind = 0; ind < l.length; ind++){ // Para cada posible seleccion
+                        var padd = Math.log(l.length) / Math.log(2); // Cantidad de digitos codigo binario de seleccion
+                        for(var ind = 0; ind < l.length; ind++){ // Para cada nodo destino
                             
-                            var w; // Peso del enlace
-                            var lbl; // Etiqueta
+                            var w = 0; // Peso del enlace defecto
+                            var lbl = (parseInt(ind)).toString(2).padStart(padd, "0") + "\n(0)"; // Etiqueta defecto
+                            
                             if(weights[k]){
-                                if(weights[k][tree[k].options[j].decision[ind]]){
-                                    w = weights[k][tree[k].options[j].decision[ind]];
-                                    lbl = (ind).toString(2).padStart( padding,"0") + "\n(" + w + ")";
-                                }else{
-                                    w = 0;
-                                    lbl = (ind).toString(2).padStart( padding,"0") + "\n(0)";
+                                if(weights[k][parseInt(l[ind])]){
+                                    if(weights[k][parseInt(l[ind])][ind]){ // Si hay camino computado, incrementar value
+                                        w = weights[k][parseInt(l[ind])][ind];
+                                        lbl = (parseInt(ind)).toString(2).padStart(padd, "0") + "\n(" + w + ")";
+                                    }
                                 }
-                            }else{
-                                w = 0;
-                                lbl = (ind).toString(2).padStart( padding,"0") + "\n(0)";
                             }
+                            
                             edges.push({
                                 from: k,
                                 to: parseInt(l[ind]),

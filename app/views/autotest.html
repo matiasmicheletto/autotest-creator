@@ -18,7 +18,7 @@
 				<!-- Enlace a siguiente menu -->
 				<button ng-if="item.type=='goto'" class="menu-btn button button-raised button-fill button-round" 
 					style="background-color: {{item.color || '#1a068d'}};" 
-					ng-click="loadMenu(item.goto)"
+					ng-click="loadMenu(item.goto, key)"
 					ng-bind-html="item.text">
 				</button>
 				

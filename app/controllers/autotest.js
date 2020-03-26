@@ -11,10 +11,11 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
         $rootScope.hidePreloader();
 
         $scope.tree = config.tree;
-        $scope.current = config.tree[0];
+        $scope.current = config.tree[0]; // Menu actual
+        $scope.currentIndex = 0; // Indice actual
         $rootScope.logData.treeID = config.id; // Guardar el id del arbol
-        $rootScope.logData.actionStack.push({ // Registrar primer menu
-            index: "0",
+        $rootScope.logData.actionStack.push({ // Registrar inicio de autotest
+            type: "start",
             timestamp: Date.now()
         });
 
@@ -24,14 +25,18 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
         console.log(err);
     });
 
-    $scope.loadMenu = function (index) { // Callback de botones con enlace a sgte nodo
-        if(index > 0){ // Pasar a la siguiente vista
-            if ($scope.tree[index]){ // Control
+    $scope.loadMenu = function (menuIndex, optIndex) { // Callback de botones con enlace a sgte nodo
+        if(menuIndex > 0){ // Pasar a la siguiente vista
+            if ($scope.tree[menuIndex]){ // Control
                 $rootScope.logData.actionStack.push({
-                    index: index,
+                    type: "loadMenu", // Tipo de accion
+                    from: $scope.currentIndex, // Desde que menu
+                    to: menuIndex, // Hacia que menu
+                    by: optIndex, // Por cual opcion. (goto->opt[index], decision->dec[index])
                     timestamp: Date.now()
                 });
-                $scope.current = $scope.tree[index];
+                $scope.current = $scope.tree[menuIndex];
+                $scope.currentIndex = menuIndex;
             }
         }
     };
@@ -56,9 +61,9 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
             if($scope.current.options[k].type=="toggle")
                 binArray = binArray+($scope.current.options[k].checked ? "1":"0");
 
-        var index = parseInt(binArray,2); // Convertir a decimal
+        var index = parseInt(binArray,2); // Valor decimal del numero de caso
 
-        $scope.loadMenu(gotoArray[index]); // Ir a la vista correspondiente
+        $scope.loadMenu(gotoArray[index], index); // Ir al menu correspondiente
     };
 
     $scope.exit = function(code){ // Finalizacion del test
@@ -92,11 +97,12 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
 
         // Para contadores de caminos recorridos
         var updPathObj = {}; // Contadores de caminos para cada arbol
-        var path = "P_0";
-        for(var k = 1; k < $rootScope.logData.actionStack.length; k++){
-            path += "_"+$rootScope.logData.actionStack[k].index;
-            updPathObj[path] = firebase.firestore.FieldValue.increment(1);
-            path = "P_"+$rootScope.logData.actionStack[k].index;
+        for(var k = 1; k < $rootScope.logData.actionStack.length; k++){ // Para cada evento de usuario
+            if($rootScope.logData.actionStack[k].type=="loadMenu"){ // Tipo de accion es cambio de menu
+                var path = "P_"+$rootScope.logData.actionStack[k].from+"_"+$rootScope.logData.actionStack[k].to+"_"+$rootScope.logData.actionStack[k].by;
+                updPathObj[path] = firebase.firestore.FieldValue.increment(1);
+            }
+            
         }
         middleware.fs.update(updPathObj,"pathStats",$rootScope.logData.treeID);
 
@@ -109,6 +115,7 @@ app.controller("autotest", ['$scope', '$rootScope', function ($scope, $rootScope
                     content: "Si desea actualizar sus respuestas, puede repetir el test dentro de "+Math.round($rootScope.config.logLimit.elapsed/3600000)+" horas.",
                     options:[
                         {
+                            type:"link",
                             text:"Menú principal",
                             href:"#!/"
                         }
