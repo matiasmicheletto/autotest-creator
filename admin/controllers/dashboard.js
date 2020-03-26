@@ -129,6 +129,8 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                 maxWeight = $rootScope.pathStats[treeData.id][k];
         }
 
+        if(maxWeight == 0) maxWeight = 1;
+
         var nodes = [];
         var edges = [];
 
@@ -195,7 +197,7 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                                 type: 'curvedCW',
                                 roundness: Math.random() - 0.5
                             },
-                            value: 1,
+                            value: 0,
                             label: "Enlace ext."
                         });
                         break;
@@ -251,7 +253,7 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                                 type: 'curvedCW',
                                 roundness: Math.random() - 0.5
                             },
-                            value: 1,
+                            value: 0,
                             label: "Cód. de salida"
                         });
                         break;
