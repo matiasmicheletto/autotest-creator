@@ -14,11 +14,25 @@
 		<div class="block">
 		
 			<div class="menu-btn-container row" ng-repeat="(key, item) in current.options track by $index">
-				
+
 				<!-- Enlace a siguiente menu -->
 				<button ng-if="item.type=='goto'" class="menu-btn button button-raised button-fill button-round" 
 					style="background-color: {{item.color || '#1a068d'}};" 
-					ng-click="loadMenu(item.goto)"
+					ng-click="loadMenu(item.goto, key)"
+					ng-bind-html="item.text">
+				</button>
+				
+				<!-- Toggle -->
+                <button ng-if="item.type=='toggle'" class="menu-btn button button-raised button-fill button-round" 
+					style="background-color: {{item.color || '#1a068d'}}"
+                	ng-click="toggleButton(key)">
+                    	<i style="float:left;" class="material-icons">{{item.checked ? 'check_box':'check_box_outline_blank'}}</i> {{item.text}}
+                </button>
+
+                <!-- Decision -->
+				<button ng-if="item.type=='decision'" class="menu-btn button button-raised button-fill button-round" 
+					style="background-color: {{item.color || '#1a068d'}};" 
+					ng-click="evalDecision(item.decision)"
 					ng-bind-html="item.text">
 				</button>
 				
@@ -30,11 +44,11 @@
 				</a>
 
 				<!-- Finalizacion -->
-				<a ng-if="item.type=='exit'" class="menu-btn button button-raised button-fill button-round" 
+				<button ng-if="item.type=='exit'" class="menu-btn button button-raised button-fill button-round" 
 					style="background-color: {{item.color || '#1a068d'}};" 
 					ng-click="exit(item.exitCode)"
 					ng-bind-html="item.text">
-				</a>
+				</button>
 
 			</div>
 		</div>
