@@ -75,7 +75,7 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
             };
 
             $rootScope.showPreloader("Verificando datos...");
-            middleware.fs.query("results", "dni", "==", $scope.userData.dni, 3)
+            middleware.fs.query("results", "dni", "==", $scope.userData.dni)
             .then(function(results){
                 $rootScope.hidePreloader();
                 // Definir valores por defecto en caso de que la base de datos no traiga nada
