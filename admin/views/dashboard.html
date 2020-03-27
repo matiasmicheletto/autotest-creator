@@ -4,7 +4,9 @@
             <h3>Monitor de resultados</h3>
         </div>
         <div class="col-2 text-right">
-            <a title="Actualizar datos" class="btn btn-light"><i class="material-icons" ng-click="updateStats()">cached</i></a>
+            <a title="Restaurar anterior" class="btn btn-light"><i class="material-icons" data-toggle="modal" data-target="#load-stats-modal">open_in_browser</i></a>
+            <a title="Guardar y reiniciar" class="btn btn-light"><i class="material-icons" ng-click="clearStats()">save_alt</i></a>
+            <a title="Actualizar contadores" class="btn btn-light"><i class="material-icons" ng-click="updateStats()">cached</i></a>
         </div>
         
     </div>
@@ -62,4 +64,24 @@
         </div>
     </div>
 
+</div>
+
+
+<div class="modal fade" id="load-stats-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Restaurar contadores</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>

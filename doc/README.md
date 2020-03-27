@@ -46,6 +46,10 @@ service cloud.firestore {
       ".read": true,
       ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
       ".indexOn": ["active","timestamp"]
+    },
+    "statsBackups":{
+      ".read": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
+      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'"
     }
   }
 }

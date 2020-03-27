@@ -337,6 +337,84 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
             });
     };
 
+    $scope.clearStats = function(){ // Guardar contadores en realtime y reiniciar estadisticas
+
+        $rootScope.loading = true;
+        middleware.fs.getCollection("stats")
+            .then(function (snapshot) {
+                $rootScope.stats = {}; // Objeto con contadores
+                snapshot.forEach(function (document) {
+                    $rootScope.stats[document.id] = document.data();
+                });
+                middleware.fs.getCollection("pathStats")
+                    .then(function (snapshot2) {
+                        $rootScope.pathStats = {};
+                        snapshot2.forEach(function (document) {
+                            $rootScope.pathStats[document.id] = document.data();
+                        });
+
+                        var statsBackups = { // Objeto a guardar en realtimeDB
+                            stats: $rootScope.stats,
+                            pathStats: $rootScope.pathStats,
+                            timestamp: Date.now()
+                        };
+
+                        var job = [];
+                        
+                        // Actualizar datos en realtime
+                        job.push(middleware.db.push(statsBackups,"statsBackups"));
+
+                        // Reiniciar contadores de datos
+                        for(var k in $rootScope.stats){
+                            for(var j in $rootScope.stats[k]){
+                                $rootScope.stats[k][j] = 0;
+                            }
+                            job.push(middleware.fs.update($rootScope.stats[k], "stats", k));
+                        }
+
+                        // Reiniciar contadores de paths
+                        for(var k in $rootScope.pathStats){
+                            for(var j in $rootScope.pathStats[k]){
+                                $rootScope.pathStats[k][j] = 0;
+                            }
+                            job.push(middleware.fs.update($rootScope.pathStats[k], "pathStats", k));
+                        }
+
+                        Promise.all(job)
+                        .then(function(){
+                            updatePathsPlot();
+                            updateAgePlot();
+                            updaterResultPlot();
+                            updateGenderPlot();
+                            $rootScope.loading = false;
+                            $scope.$apply();
+                        })
+                        .catch(function(err3){
+                            console.log(err3);
+                            $rootScope.loading = false;
+                            $scope.$apply();
+                        });
+
+                        $rootScope.loading = false;
+                        $scope.$apply();
+                    })
+                    .catch(function (err2) {
+                        console.log(err2);
+                        $rootScope.loading = false;
+                        $scope.$apply();
+                    });
+            })
+            .catch(function (err) {
+                console.log(err);
+                $rootScope.loading = false;
+                $scope.$apply();
+            });
+    };
+
+    $scope.restoreStat = function(key){ // Actualiza los contadores a un estado anterior
+        
+    };
+
 
     if (!$rootScope.stats) // Descargar la 1ra vez
         $scope.updateStats();
