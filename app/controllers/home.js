@@ -5,7 +5,7 @@ app.controller("home", ['$scope', '$rootScope', function ($scope, $rootScope) {
 
     // Intentar recuperar los datos guardados
     var localData = localStorage.getItem('userData');
-    console.log(localData);
+    //console.log(localData);
     if(localData)
         $scope.userData = JSON.parse(localData);
     else
