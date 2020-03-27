@@ -26,9 +26,19 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header border-bottom">
-                    <h5 class="card-title">Espacio de operación <sup><a ng-click="showHelp('map')" class="help-icon"><i
-                                    class="material-icons">help</i></a></sup>
-                    </h5>
+                    <div class="row">
+                        <div class="col-10 text-left">
+                            <h5 class="card-title">Espacio de operación <sup><a ng-click="showHelp('map')"
+                                        class="help-icon"><i class="material-icons">help</i></a></sup>
+                            </h5>
+                        </div>
+                        <div class="col-2 text-right">
+                            <a title="Limpiar mapa" class="btn btn-light" ng-click="clearLocationFilters()">
+                                <i class="material-icons">layers_clear</i>
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="card-body">
                     <div id="map" style="height: 500px;"></div>
@@ -165,7 +175,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>Configurar nuevo espacio de operación</h4>
+                <h4>Agregar nuevo espacio de operación</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -188,7 +198,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-dark" ng-click="updateLocationFilter()">Aceptar</button>
+                <button type="button" class="btn btn-dark" ng-click="addLocationFilter()">Agregar</button>
             </div>
         </div>
     </div>
