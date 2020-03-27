@@ -10,16 +10,26 @@ Desde el panel de administrador se configura el sistema. Se define el área de o
 
 ![General](doc/general_view.png "General") 
 
-
 ## Diagrama de flujo de la aplicación
 
 La aplicación implementa el siguiente diagrama de flujo que resume el funcionamiento:
 
 ![Proceso](doc/app_process.png "Proceso") 
 
+## Capturas de pantalla
 
-## Ejemplo autotest COVID-19
+### Aplicación móvil
+![CapturasApp](doc/app_screenshots.png "Capturas app") 
 
-El siguiente arbol muestra el ejemplo de la implementación de un autotest para evaluar posibles casos de COVID-19 en la población.
+### Configuración de área de operación
+![Area](doc/admin_config_map.png "Configuración mapa") 
 
-![Ejemplo](doc/decision_tree.png "Ejemplo") 
+### Creación/edición de arboles de decisión
+![Arbol](doc/admin_config_tree.png "Configuración árbol") 
+
+### Simulador embebido para testear modelos
+![Simulador](doc/admin_app_simulator.png "Simulador") 
+
+### Estadística de resultados
+![Model](doc/decision_tree_weights.png "Modelo") 
+
