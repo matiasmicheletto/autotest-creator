@@ -111,29 +111,28 @@ window.middleware = (function () {
                         return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
                     };
 
-                    // Determinar distancia al centro del area
+                    // Ubicación del usuario
                     var userLatLng = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
 
-                    var range = haversine(config.locationFilter, userLatLng); // Distancia entre el usuario y el centro del area
+                    console.log(config.locationFilters);
 
-                    if (DEBUG) {
-                        console.log("Filtro: Lat.: " + position.coords.latitude + " -- Lng: " + position.coords.longitude);
-                        console.log("Cliente: Lat: " + config.locationFilter.lat + " -- Lng: " + config.locationFilter.lng);
-                        console.log("Distancia: " + range);
+                    for(var k in config.locationFilters){
+                        // Distancia entre el usuario y el centro del area del filtro k-esimo
+                        var range = haversine(config.locationFilters[k], userLatLng); 
+                        if (DEBUG) {
+                            console.log("Filtro: Lat.: " + position.coords.latitude + " -- Lng: " + position.coords.longitude);
+                            console.log("Cliente: Lat: " + config.locationFilters[k].lat + " -- Lng: " + config.locationFilters[k].lng);
+                            console.log("Distancia: " + range);
+                        }
+                        if (range < config.locationFilters[k].range) // Si esta dentro de rango 
+                            return fulfill(userLatLng); // Permitir acceso retornando la posicion del usuario
                     }
 
-                    if (range < config.locationFilter.range) // Si esta dentro de rango, retornar posicion del usuario
-                        return fulfill({
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        });
-                    else // Si no pertenece al area de analisis
-                        return reject({
-                            msg: "Usuario fuera de area"
-                        });
+                    // Si termina el loop sin pertenecer a ninguna region
+                    return reject({msg: "Usuario fuera de area"}); // Impedir acceso
                 });
             } else {
                 return reject({
