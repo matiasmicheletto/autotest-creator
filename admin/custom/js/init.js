@@ -113,7 +113,7 @@ var app = angular.module('autotest-admin', ['ngRoute', 'ngSanitize'])
                     $rootScope.helpContent = "<p>Configure los parámetros de funcionamiento de la aplicación y presione \"Guardar\" para que la configuración tome efecto o \"Descartar\" para reestablecer los cambios a los valores activos.</p>";
                     break;
                 case "map":
-                    $rootScope.helpContent = "<p>El mapa muestra el area de interés. Para modificar esta zona, pulse sobre el mapa y luego indique el radio del área.</p>";
+                    $rootScope.helpContent = "<p>El mapa muestra el area de interés. Para agregar una nueva región circular a esta zona, pulse sobre el mapa, indique el radio del área y presione \"Agregar\". Para borrar el área actual, presione el botón con el ícono <i class='material-icons'>layers_clear</i>.</p>";
                     break;
                 case "log-limit":
                     $rootScope.helpContent = "<p>Configure la cantidad de veces que un mismo usuario puede realizar el autotest y el tiempo que debe transcurrir entre cada resultado registrado en la base de datos</p>";

@@ -15,10 +15,11 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         accessToken: 'pk.eyJ1IjoibWF0aWFzbWljaGVsZXR0byIsImEiOiJjazVsa2ZtamowZHJnM2ttaXFmZGo1MDhtIn0.8iBO-J1wj34LIqq-e4Me5w'
     }).addTo($scope.map);
 
+    $scope.defaultFilterRange = 50; // Valor por defecto
     $scope.map.on('click', function(e){ // Callback de click
         console.log(e.latlng);
         $scope.newLocation = e.latlng;
-        $scope.newLocation.range = $scope.tempConfig.locationFilter.range;
+        $scope.newLocation.range = $scope.defaultFilterRange; // Valor por defecto
         $scope.$apply();
         $("#location-modal").modal("show");
     });
@@ -37,28 +38,40 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     */
 
     var setupMap = function(){  // Dibujar area de operacion
-        var current_location = { // Crear marcador
-            marker: L.marker($scope.tempConfig.locationFilter),
-            radius: L.circle($scope.tempConfig.locationFilter, $scope.tempConfig.locationFilter.range*1000) // Rango en metros
-        };
+        if(!$scope.markerGroup) // Grupo de marcadores de los filtros
+            $scope.markerGroup = L.layerGroup().addTo($scope.map);
 
-        if($scope.markerGroup) $scope.markerGroup.clearLayers(); // Un marcador a la vez
+        $scope.markerGroup.clearLayers(); // Limpiar mapa (se redibuja cada vez)
+
+        for(var k in $scope.tempConfig.locationFilters){
         
-        $scope.markerGroup = L.layerGroup().addTo($scope.map);
+            var new_location = { // Crear marcador
+                marker: L.marker($scope.tempConfig.locationFilters[k]),
+                radius: L.circle($scope.tempConfig.locationFilters[k], $scope.tempConfig.locationFilters[k].range*1000) // Rango en metros
+            };
 
-        // Agregar marcador al mapa con su circulo de posicion estimada
-        current_location.marker.addTo($scope.markerGroup).bindPopup("Area de acceso a la aplicación");
-        current_location.radius.addTo($scope.markerGroup);
-        current_location.marker.openPopup();
+            $scope.defaultFilterRange = $scope.tempConfig.locationFilters[k].range; // Por defecto dejar el valor del ultimo agregado
+
+            // Agregar marcador al mapa con su circulo de posicion estimada
+            new_location.marker.addTo($scope.markerGroup).bindPopup("Area de acceso a la aplicación");
+            new_location.radius.addTo($scope.markerGroup);
+            new_location.marker.openPopup();
+        }
     };
 
-    $scope.updateLocationFilter = function(){ // Callback para configurar nueva ubicacion
-        $scope.tempConfig.locationFilter = angular.copy($scope.newLocation);
+    $scope.addLocationFilter = function(){ // Callback para agregar nueva ubicacion a la lista de filtros
+        if(!$scope.tempConfig.locationFilters) // Caso de lista vacia
+            $scope.tempConfig.locationFilters = [];
+        $scope.tempConfig.locationFilters.push($scope.newLocation);
         setupMap();
         toastr.success("Espacio de operación actualizado");
         $("#location-modal").modal("hide");
     };
 
+    $scope.clearLocationFilters = function(){ // Borrar todos los filtros de ubicacion
+        $scope.tempConfig.locationFilters = [];
+        setupMap();
+    };
 
     var updateTreePlot = function () { // Grafico de caminos recorridos
         
@@ -421,7 +434,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
         }
 
         // Actualizar configuracion de filtros
-        forUpdate["config/locationFilter"] = $scope.tempConfig.locationFilter;
+        forUpdate["config/locationFilters"] = $scope.tempConfig.locationFilters;
         forUpdate["config/logLimit"] = $scope.tempConfig.logLimit;
         
         $rootScope.loading = true;
