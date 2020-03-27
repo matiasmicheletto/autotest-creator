@@ -354,6 +354,7 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                         });
 
                         var statsBackups = { // Objeto a guardar en realtimeDB
+                            name: $scope.backupName,
                             stats: $rootScope.stats,
                             pathStats: $rootScope.pathStats,
                             timestamp: Date.now()
@@ -388,6 +389,7 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
                             updateGenderPlot();
                             $rootScope.loading = false;
                             $scope.$apply();
+                            $("#save-modal").modal("hide");
                         })
                         .catch(function(err3){
                             console.log(err3);
@@ -411,10 +413,81 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
             });
     };
 
-    $scope.restoreStat = function(key){ // Actualiza los contadores a un estado anterior
+    $scope.listBckps = function(){ // Listar los backups guardados de contadores
+        $rootScope.loading = true;
+
+        middleware.db.get("statsBackups")
+        .then(function(snapshot){
+            $scope.backupList = []; // Lista de backups
+            for(var k in snapshot){
+                var bk = snapshot[k];
+                bk.key = k;
+                $scope.backupList.push(bk);
+            }
+
+            $rootScope.loading = false;
+            $("#load-stats-modal").modal("show");
+            $scope.$apply();
+        })
+        .catch(function(err){
+            console.log(err);
+            $rootScope.loading = false;
+            $scope.$apply();
+        });
+    };
+
+    $scope.viewBackup = function(key){ // Cargar backup (sin sobreescribir)
+        var index = $scope.backupList.findIndex(function(el){return el.key == key});
+        
+        $rootScope.stats = angular.copy($scope.backupList[index].stats);
+        $rootScope.pathStats = angular.copy($scope.backupList[index].pathStats);
+
+        updateAgePlot();
+        updaterResultPlot();
+        updateGenderPlot();
+        updatePathsPlot();
+
+        $("#load-stats-modal").modal("hide");
+    };
+
+    $scope.restoreBackup = function(key){ // Restaurar contadores (sobreescribiendo contadores activos)
+        
+        $rootScope.loading = true;
+        
+        var index = $scope.backupList.findIndex(function(el){return el.key == key});
+
+        var job = [];
+        for(var k in $scope.backupList[index].stats)
+            job.push(middleware.fs.update($scope.backupList[index].stats[k], "stats", k));
+        
+        for(var k in $scope.backupList[index].pathStats)
+            job.push(middleware.fs.update($scope.backupList[index].pathStats[k], "pathStats", k));
+
+        Promise.all(job)
+        .then(function(){
+            $rootScope.stats = angular.copy($scope.backupList[index].stats);
+            $rootScope.pathStats = angular.copy($scope.backupList[index].pathStats);
+            $rootScope.loading = false;
+            $scope.$apply();
+            $("#load-stats-modal").modal("hide");
+            updateAgePlot();
+            updaterResultPlot();
+            updateGenderPlot();
+            updatePathsPlot();
+        })
+        .catch(function(err){
+            console.log(err);
+            $rootScope.loading = false;
+            $scope.$apply();
+        });
         
     };
 
+    $scope.deleteBackup = function(key){ // Eliminar backup
+        var index = $scope.backupList.findIndex(function(el){return el.key == key});
+
+        // TODO
+    };
 
     if (!$rootScope.stats) // Descargar la 1ra vez
         $scope.updateStats();
