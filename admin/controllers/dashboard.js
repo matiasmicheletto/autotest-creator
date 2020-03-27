@@ -122,12 +122,13 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
             var from = parseInt(p[1]);
             var to = parseInt(p[2]);
             var index = parseInt(p[3]);
-            weights[from] = []; // Crear array de nodos destino vacio
-            weights[from][to] = []; // Crear array de caminos para llegar a destino
+            if(!weights[from]) weights[from] = []; // Crear array de nodos destino vacio
+            if(!weights[from][to]) weights[from][to] = []; // Crear array de caminos para llegar a destino
             weights[from][to][index] = $rootScope.pathStats[treeData.id][k]; // Asignar peso del enlace
             if($rootScope.pathStats[treeData.id][k] > maxWeight) // Calcular maximo
                 maxWeight = $rootScope.pathStats[treeData.id][k];
         }
+        console.log(weights);
 
         if(maxWeight == 0) maxWeight = 1;
 
