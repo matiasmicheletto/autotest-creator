@@ -1,9 +1,13 @@
 {
+  "dir": "ltr",
+  "lang": "Spanish; Castilian",
   "name": "autotest-app",
   "short_name": "Autotest App",
+  "start_url": "https://github.com/matiasmicheletto/autotest-creator/app",
+  "description": "Autotests dinámicos configurables",
   "theme_color": "#3c3c3c",
   "background_color": "#bbbbbb",
-  "display": "fullscreen",
+  "display": "standalone",
   "orientation": "portrait",
   "Scope": "/",
   "icons": [

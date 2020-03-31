@@ -489,6 +489,79 @@ app.controller("dashboard", ['$scope', '$rootScope', '$location', function ($sco
         // TODO
     };
 
+    $rootScope.exportDB = function(format){ // Exportar resultados de la base de datos
+        $rootScope.loading = true;
+
+        var exp = function(data){ // Adecuar datos segun el formato
+            switch(format){
+                case "xlsx":
+                    var rows = [["ID Resultado", "ID Árbol", "Código finalización", "Estampa de tiempo", "DNI", "Nombre", "Edad", "Tel.", "Género", "Lat.", "Long."]];
+                    for(var k in data){ // Para cada resultado
+                        rows.push([ // Agregar filas de datos
+                            data[k].id,
+                            data[k].treeID,
+                            data[k].exitCode,
+                            data[k].timestamp,
+                            data[k].dni,
+                            data[k].name,
+                            data[k].age,
+                            data[k].tel,
+                            data[k].gender,
+                            data[k].lat,
+                            data[k].lng
+                        ]);
+                    }
+                    middleware.utils.downloadXLSX(rows, "ResultadosAutotest", "Resultados");
+                    break;
+                case "csv":
+                    // Encabezado del archivo
+                    var csvData = "ID Resultado, ID Árbol, Código finalización, Estampa de tiempo, DNI, Nombre, Edad, Tel., Género, Lat., Long.\n";
+                    for(var k in data){ // Para cada resultado
+                        var line = [ // Arreglo de datos que contiene cada linea del csv
+                            data[k].id,
+                            data[k].treeID,
+                            data[k].exitCode,
+                            data[k].timestamp.toString(),
+                            data[k].dni.toString(),
+                            data[k].name,
+                            data[k].age.toString(),
+                            data[k].tel,
+                            data[k].gender,
+                            data[k].lat.toString(),
+                            data[k].lng.toString()
+                        ];
+                        csvData += line.join(",")+"\n";
+                    }
+                    middleware.utils.saveFile(csvData, 'ResultadosAutotest.csv', 'text/plain');
+                    break;
+                case "json":
+                    console.log(data);
+                    middleware.utils.saveFile(JSON.stringify(data), 'ResultadosAutotest.json', 'text/json');
+                    break;
+                default: 
+                    break;
+            }
+            $rootScope.loading = false;
+            $scope.$apply();
+        };
+
+        middleware.fs.getCollection("results")
+        .then(function(snapshot){
+            var data = [];
+            snapshot.forEach(function (document) {
+                var d = document.data();
+                d.id = document.id;
+                data.push(d);
+            });
+            exp(data);
+        })
+        .catch(function(err){
+            console.log(err);
+            $rootScope.loading = false;
+            $scope.$apply();
+        });
+    };
+
     if (!$rootScope.stats) // Descargar la 1ra vez
         $scope.updateStats();
     else { // Sino, directamente actualizar graficos
