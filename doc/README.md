@@ -1,9 +1,54 @@
 # Documentación
 
-## Base de datos
-Firebase 7.12.0
 
-## Reglas de seguridad Firestore
+### 1 - Organización del directorio
+
+Los archivos del proyecto están organizados de la siguiente manera:
+
+![Directorio](img/directorio.png "Directorio") 
+
+
+### 2 - Crear proyecto Firebase
+
+Este proyecto usa la versión de Firebase 7.12.0.  
+Los CRUD Wrappers están disponibles en admin/custom/js ó app/custom/js
+
+![Firebase](img/firebase_new.png "Firebase") 
+
+
+### 3 - Crear un usuario administrador
+
+Una vez inicializado el proyecto, acceder a la consola de Firebase y crear un usuario con email y contraseña.
+
+![Auth](img/firebase_auth.png "Auth") 
+
+### 4 - Definir reglas de seguridad
+
+En la sección reglas de seguridad de la base de datos de tiempo real, copiar el siguiente fragmento de código, reemplazando el uid "yP480ZKzsBQhLfBES9jV4mzutCd2" por el correspondiente UID del usuario administrador del sistema:
+
+```
+{
+  "rules": {
+    "config":{
+      ".read": true,
+      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'"
+    },
+    "decisionTrees":{
+      ".read": true,
+      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
+      ".indexOn": ["active","timestamp"]
+    },
+    "statsBackups":{
+      ".read": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
+      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'"
+    }
+  }
+}
+```
+
+En la sección reglas de seguridad de Firestore, copiar el siguiente fragmento de código:
+
+
 ```
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -34,129 +79,20 @@ service cloud.firestore {
 }
 ```
 
-## Reglas de seguridad Realtime Database
-```
-{
-  "rules": {
-    "config":{
-      ".read": true,
-      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'"
-    },
-    "decisionTrees":{
-      ".read": true,
-      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
-      ".indexOn": ["active","timestamp"]
-    },
-    "statsBackups":{
-      ".read": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'",
-      ".write": "auth.uid == 'yP480ZKzsBQhLfBES9jV4mzutCd2'"
-    }
-  }
-}
-```
+### 5 - Importar datos
 
-## Formato objeto de configuración
-```json
-{
-	"locationFilter":{
-		"lat":-38.7164681,
-		"lng":-62.2699996,
-		"range": 1
-	},
-	"logsFilter":{
-		"max":3,
-		"elapsed":86400000
-	}
-}
-```
+Importar el archivo doc/realtime-db-export.json al root de la base de datos de tiempo real. Estos datos son de prueba, se pueden modificar en cualquier momento respetando la estructura básica del árbol.
 
-## Formato árbol de decisión autotest
-```json
-{
-	"author": "admin@email.com",
-	"timestamp": 1584817621486,
-	"id": "T001",
-	"tree":[
-		{
-			"header": "¿Viajaste recientemente a zonas de riesgo?",
-			"content": "Países con circulación de virus o aeropuertos internacionales",
-			"options":[
-				{
-					"text":"Si",
-					"goto":"1"
-				},
-				{
-					"text":"No",
-					"goto":"2"
-				}
-			]
-		},
-		{
-			"header": "¿Tenés alguno de los siguientes síntomas?",
-			"content": "<ul><li>Fiebre</li><li>Tos</li><li>Dolor de garganta</li></ul><p>Indicá si es con o sin dificultad respiratoria (falta de aire):",
-			"options":[
-				{
-					"text":"Sí, <b><i>con</i></b> dificultad respiratoria",
-					"goto":"4",
-					"color": "#B40404"
-				},
-				{
-					"text":"Sí, <b><i>sin</i></b> dificultad respiratoria",
-					"goto":"3",
-					"color": "#B404AE"
-				},
-				{
-					"text":"Ningún síntoma",
-					"goto":"3",
-					"color": "#013ADF"
-				}	
-			]
-		},
-		{
-			"header":"¿Estuviste en contacto con un caso sospechoso, confirmado o persona que viajó al exterior?",
-			"options":[
-				{
-					"text":"Sí",
-					"goto":"1"
-				},
-				{
-					"text":"No",
-					"goto":"3"
-				}
-			]
-		},
-		{
-			"header":"Es obligación que realices aislamiento social y preventivo en tu domicilio. Además es importante:",
-			"content": "<ul><li>Lavate las manos con agua y jabón.</li><li>Tosé y estornudá en el pliegue del codo.</li><li>Ventilá y limpiá objetos y superficies que uses mucho.</li><li>Evitá besos, abrazos y compartir mate.</li></ul><br><p>Ante alguna duda podés realizar la consulta al Departamento de Epidemología y Calidad de la Secretaría de Salud: <a href='tel:+5492914390105'>+54 9 291 439-0105</a>.</p><center><h3>Cuidarnos es aislarnos</h3></center>",
-			"options":[
-				{
-					"text":"+54 9 291 439-0105",
-					"href":"tel:+5492914390105"
-				},
-				{
-					"text":"Finalizar",
-					"goto":"-1",
-					"exitCode": "S001"
-				}
-			]
-		},
-		{
-			"header":"Proceda comunicándose con:",
-			"content": "<ul><li>Servicio de Emergencias: <a href='tel:148'>148</a></li></ul>",
-			"options":[
-				{
-					"text":"Llamar 148",
-					"href":"tel:148",
-					"color":"#B40404",
-					"exitCode": "S002"
-				},
-				{
-					"text":"Finalizar",
-					"goto":"-1",
-					"exitCode": "S002"
-				}
-			]
-		}
-	]
-}
-```
+![Importar](img/realtime_import.png "Importar") 
+
+
+### 6 - Editar claves de acceso a Firebase
+
+En los archivos app/custom/js/middleware.js y admin/custom/js/middleware.js, editar la variable "firebaseConfig" y reemplazar por las credenciales correspondientes al nuevo proyecto creado.
+
+![Claves](img/firebase_config.png "Claves") 
+
+### 7 - Hostear y ejecutar
+
+La aplicación debe estar hosteada en sitio web con certificado SSL para que funcione como PWA.  
+El panel de administrador no necesariamente debe ser público.
