@@ -12,7 +12,7 @@ app.controller("config", ['$scope', '$rootScope', function ($scope, $rootScope) 
     
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         id: 'mapbox/streets-v11',
-        accessToken: 'pk.eyJ1IjoibWF0aWFzbWljaGVsZXR0byIsImEiOiJjazVsa2ZtamowZHJnM2ttaXFmZGo1MDhtIn0.8iBO-J1wj34LIqq-e4Me5w'
+        accessToken: 'pk.eyJ1IjoibWF0aWFzbWljaGVsZXR0byIsImEiOiJjazh2b3A4eGswbnZqM2ludTdhbjBuYnZ4In0.Nwsu6goxfwM_8AhKW-ZPew'
     }).addTo($scope.map);
 
     $scope.defaultFilterRange = 50; // Valor por defecto
